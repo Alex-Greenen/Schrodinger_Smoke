@@ -12,6 +12,7 @@
 using namespace std;
 
 template <class field_type>
+
 class field {
 public:
     field(){}
@@ -23,19 +24,19 @@ public:
         grid = new field_type[number_of_grid_nodes];
     }
 
-    double* convert_to_real_coordinates(int x, int y, int z);
+    array<double, 3> convert_to_real_coordinates(int x, int y, int z);
     void updateGridValue(int x, int y, int z, field_type value);
     field_type getGridValue(int x, int y, int z);
 
-    float grid_size[];
-    int grid_marks[];
+    array<float,3> grid_size;
+    array<int,3> grid_marks;
     int number_of_grid_nodes;
     float resolution;
     field_type* grid;
 
 };
 
-double* field::convert_to_real_coordinates(int x, int y, int z){
+array<double, 3> field::convert_to_real_coordinates(int x, int y, int z){
     /**
     * Converts grid coordinates to world coordinates
     *
@@ -44,8 +45,7 @@ double* field::convert_to_real_coordinates(int x, int y, int z){
     * @param z Z grid point
     * @return Array of (x,y,z) world coordinates
     */
-    double returner[] = {resolution*x, resolution*y, resolution*z};
-    return returner;
+    return {resolution*x, resolution*y, resolution*z};
 }
 
 template <class field_type>

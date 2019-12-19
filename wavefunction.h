@@ -45,9 +45,9 @@ void wavefunction::time_evolve(){
 
     // At t += dt/2, evolve R
 
-    real = real + dt * ((-hbar*hbar/2)*laplacian('i') + potential * imaginary);
+    real = real + dt * ((-hbar*hbar/2)*laplacian(&imaginary) + potential * imaginary);
 
-    imaginary = imaginary - dt * ((-hbar*hbar/2)*laplacian('r') + potential * real);
+    imaginary = imaginary - dt * ((-hbar*hbar/2)*laplacian(&real) + potential * real);
 
 }
 

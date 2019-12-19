@@ -7,12 +7,7 @@
 
 class vector3D {
 public:
-    vector3D(){
-        e[0] = 0;
-        e[1] = 0;
-        e[2] = 0;
-    }
-
+    vector3D(){}
     vector3D(float x, float y, float z){
         e[0] = x;
         e[1] = y;

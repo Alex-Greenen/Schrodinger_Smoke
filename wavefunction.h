@@ -28,6 +28,7 @@ public:
     void apply_phase(float phase_angle);
     field<vector3D> velocity_field();
     field<float> density_field();
+    void normalise();
 
 };
 
@@ -102,17 +103,10 @@ field<float> wavefunction::laplacian(char ri){
     return temp_float_field;
 }
 
-
-field<vector3D> wavefunction::velocity_field(){
-    field<vector3D> temp = divergence('i') * real + imaginary * divergence('r');
-    return temp;
-}
-
 void wavefunction::apply_phase(float phase_angle){
     real = real * cos(phase_angle) - imaginary * sin(phase_angle);
     imaginary = real * sin(phase_angle) - imaginary * cos(phase_angle);
 }
-
 
 void wavefunction::time_evolve(){
     /**
@@ -124,6 +118,19 @@ void wavefunction::time_evolve(){
     real = real + dt * ((-hbar*hbar/2)*laplacian('i') + potential * imaginary);
 
     imaginary = imaginary - dt * ((-hbar*hbar/2)*laplacian('r') + potential * real);
+
+}
+
+field<vector3D> wavefunction::velocity_field(){
+    field<vector3D> temp = divergence('i') * real + imaginary * divergence('r');
+    return temp;
+}
+
+field<float> wavefunction::density_field(){
+
+}
+
+void wavefunction::normalise(){
 
 }
 

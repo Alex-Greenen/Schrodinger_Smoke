@@ -10,7 +10,7 @@
 
 class isf {
 public:
-    isf(){}
+    isf() = default;
 
     field<vector3D> velocity_field();
     void pressure_project();
@@ -25,14 +25,20 @@ public:
     float grid_size[];
 };
 
+field<vector3D> isf::velocity_field(){
+    return (wf1->momentum_field()+wf2->momentum_field())/(wf1->density_field(), wf2->density_field());
+}
+
+
+void pressure_project(){
+
+}
+
 void isf::time_evolve(){
     wf1->time_evolve();
     wf2->time_evolve();
 }
 
-void pressure_project(){
-    
-}
 
 
 #endif //SCHRODINGER_SMOKE_ISF_H

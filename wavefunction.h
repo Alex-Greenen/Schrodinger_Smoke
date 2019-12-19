@@ -124,11 +124,6 @@ void wavefunction::time_evolve(){
 
 }
 
-field<vector3D> wavefunction::velocity_field(){
-    field<vector3D> temp = divergence('i') * real + imaginary * divergence('r');
-    return temp;
-}
-
 field<vector3D> wavefunction::momentum_field(){
     field<vector3D> temp = hbar *(divergence('i') * real - imaginary * divergence('r'));
     return temp;
@@ -139,6 +134,11 @@ field<float> wavefunction::density_field(){
     field<float> temp = real*real + imaginary*imaginary;
     return temp;
 }
+
+field<vector3D> wavefunction::velocity_field(){
+    return momentum_field()/density_field();;
+}
+
 
 void wavefunction::normalise(){
 

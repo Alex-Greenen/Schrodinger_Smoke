@@ -6,48 +6,25 @@
 #define SCHRODINGER_SMOKE_FIELD_H
 
 #include <array>
+#include <cmath>
+#include "world.h"
 
 using namespace std;
 
 template <class field_type>
-class field {
+class field: public world {
 public:
     field() = default;
-    field(float x_size, float y_size, float z_size, float res){
-        grid_size = {x_size, y_size, z_size};
-        resolution = res;
-        grid_marks = {int(x_size*res), int(y_size*res), int(z_size*res)};
-        number_of_grid_nodes = grid_marks[0]*grid_marks[1]*grid_marks[2];
+    field(float x_size, float y_size, float z_size, float res): world(x_size, y_size, z_size, res){
         grid = new field_type[number_of_grid_nodes];
     }
 
-    array<float,3> grid_size;
-    array<int,3> grid_marks;
-    int number_of_grid_nodes;
-    float resolution;
     field_type* grid;
 
-    array<float, 3> convert_to_real_coordinates(int x, int y, int z) const;
     void updateGridValue(int x, int y, int z, field_type value);
     field_type getGridValue(int x, int y, int z) const;
 };
 
-template <class field_type>
-array<float, 3> field<field_type>::convert_to_real_coordinates(int x, int y, int z) const {
-    /**
-    * Converts grid coordinates to world coordinates. Wrap around boundary if needed.
-    *
-    * @param x X grid point
-    * @param y Y grid point
-    * @param z Z grid point
-    * @return Array of (x,y,z) world coordinates
-    */
-    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
-    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
-    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
-
-    return {resolution*x, resolution*y, resolution*z};
-}
 
 template <class field_type>
 void field<field_type>::updateGridValue(int x, int y, int z, field_type value){
@@ -84,7 +61,7 @@ field_type field<field_type>::getGridValue(int x, int y, int z) const {
 }
 
 template <class field_type>
-const field<field_type> operator+(const field<field_type>& v1, const field<field_type>& v2){
+const field<field_type> operator+(const field<field_type>& v1, const field<field_type>& v2)const{
     /**
     * Adds two vector fields to give a vector field
     */
@@ -96,7 +73,7 @@ const field<field_type> operator+(const field<field_type>& v1, const field<field
 }
 
 template <class field_type>
-const field<field_type> operator-(const field<field_type>& v1, const field<field_type>& v2){
+const field<field_type> operator-(const field<field_type>& v1, const field<field_type>& v2)const{
     /**
     * Substracts two vector fields to give a vector field
     */
@@ -108,7 +85,7 @@ const field<field_type> operator-(const field<field_type>& v1, const field<field
 }
 
 template <class field_type>
-const field<field_type> operator*(const field<field_type>& v1, field<field_type>& v2){
+const field<field_type> operator*(const field<field_type>& v1, field<field_type>& v2)const{
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
@@ -120,7 +97,7 @@ const field<field_type> operator*(const field<field_type>& v1, field<field_type>
 }
 
 template <class field_type>
-const field<field_type> operator*(const field<field_type>& v1, const field<float>& v2){
+const field<field_type> operator*(const field<field_type>& v1, const field<float>& v2)const{
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
@@ -132,14 +109,14 @@ const field<field_type> operator*(const field<field_type>& v1, const field<float
 }
 
 template <class field_type>
-const field<field_type> operator*(const field<float>& v1, const field<field_type>& v2){
+const field<field_type> operator*(const field<float>& v1, const field<field_type>& v2)const{
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
     return v2*v1;
 }
 
-const field<float> operator*(const field<float>& v1, const field<float>& v2){
+const field<float> operator*(const field<float>& v1, const field<float>& v2)const{
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
@@ -151,7 +128,7 @@ const field<float> operator*(const field<float>& v1, const field<float>& v2){
 }
 
 template <class field_type>
-const field<field_type> operator*(const float v1, const field<field_type>& v2){
+const field<field_type> operator*(const float v1, const field<field_type>& v2)const {
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
@@ -163,7 +140,7 @@ const field<field_type> operator*(const float v1, const field<field_type>& v2){
 }
 
 template <class field_type>
-const field<field_type> operator*(const field<field_type>& v1, const float v2){
+const field<field_type> operator*(const field<field_type>& v1, const float v2) const {
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
@@ -171,7 +148,7 @@ const field<field_type> operator*(const field<field_type>& v1, const float v2){
 }
 
 template <class field_type>
-const field<field_type> operator/(const field<field_type>& v1, const field<float>& v2){
+const field<field_type> operator/(const field<field_type>& v1, const field<float>& v2) const {
     /**
     * Divides a vector by a scalar field to give a vector field
     */
@@ -183,7 +160,7 @@ const field<field_type> operator/(const field<field_type>& v1, const field<float
 }
 
 template <class field_type>
-const field<field_type> operator/(const field<field_type>& v1, float v2){
+const field<field_type> operator/(const field<field_type>& v1, float v2) const {
     /**
     * Divides a vector by a scalar field to give a vector field
     */

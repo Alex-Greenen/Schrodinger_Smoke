@@ -10,12 +10,13 @@
 #include "math_util.h"
 #include "field.h"
 #include "vector3D.h"
+#include "world.h"
 
-class wavefunction {
+class wavefunction: public world {
 public:
     wavefunction()= default;
-    wavefunction(field<float>* initial_real, field<float>* initial_imaginary, field<float>* _potential, double _hbar, double _dt):
-            real(*initial_real), imaginary(*initial_imaginary), potential(*_potential),hbar(_hbar), dt(_dt){}
+    wavefunction(field<float>* initial_real, field<float>* initial_imaginary, field<float>* _potential, double _hbar, double _dt, float x_size, float y_size, float z_size, float res):
+            world(x_size, y_size, z_size, res), real(*initial_real), imaginary(*initial_imaginary), potential(*_potential),hbar(_hbar), dt(_dt){}
 
     field<float> real;
     field<float> imaginary;

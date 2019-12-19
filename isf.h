@@ -9,22 +9,25 @@
 #include "math_util.h"
 #include "field.h"
 #include "vector3D.h"
+#include "world.h"
 
-class isf {
+class isf: public world {
 public:
     isf() = default;
+    isf(float x_size, float y_size, float z_size, float res): world(x_size, y_size, z_size, res) {}
 
     field<vector3D> velocity_field();
     void pressure_project();
     void time_evolve();
     void normalise();
-
+    void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
 
     wavefunction* wf1;
     wavefunction* wf2;
+
     float dt;
     float hbar;
-    float grid_size[];
+    array<int,3> grid_marks;
 };
 
 field<vector3D> isf::velocity_field(){
@@ -53,5 +56,19 @@ void isf::normalise() {
     wf2->imaginary = wf2->imaginary/density;
 }
 
+void isf::vortex_ring(vector3D center, vector3D normal, float radius, float strength){
+    normal.normalise();
+    for (int x=0; x<grid_marks[0]; x++){
+        for (int y=0; y<grid_marks[1]; y++){
+            for (int z=0; z<grid_marks[2]; z++){
+                vector3D relative_position = vector3D(x-center[0],y-center[1],z-center[2]);
+                float a = dot(relative_position, relative_position) - radius*radius;
+                float b = 2 * dot(relative_position, normal);
+                wf1->real.updateGridValue(x, y, z, a*wf1->real.getGridValue(x,y,z) -b*wf1->imaginary.getGridValue(x,y,z));
+                wf1->imaginary.updateGridValue(x, y, z, b*wf1->real.getGridValue(x,y,z) +a*wf1->imaginary.getGridValue(x,y,z));
+            }
+        }
+    }
+}
 
 #endif //SCHRODINGER_SMOKE_ISF_H

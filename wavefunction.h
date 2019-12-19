@@ -28,7 +28,6 @@ public:
     field<vector3D> velocity_field();
     field<vector3D> momentum_field();
     field<float> density_field();
-    void normalise();
 
 };
 
@@ -68,8 +67,5 @@ field<vector3D> wavefunction::velocity_field(){
 }
 
 
-void wavefunction::normalise(){
-
-}
 
 #endif //SCHRODINGER_SMOKE_WAVEFUNCTION_H

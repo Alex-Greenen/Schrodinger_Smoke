@@ -5,9 +5,9 @@
 #ifndef SCHRODINGER_SMOKE_WAVEFUNCTION_H
 #define SCHRODINGER_SMOKE_WAVEFUNCTION_H
 
-
 #include <stdexcept>
 #include "field.h"
+#include "vector3D.h"
 
 class wavefunction {
 public:
@@ -21,18 +21,18 @@ public:
     double hbar;
     double dt;
 
-    double laplacian(char ri, int x, int y, int z);
-    field<vector3D>* divergence(char ri);
+    field<vector3D> divergence(char ri);
+    field<float> laplacian(char ri);
 
     void time_evolve();
     void apply_phase(float phase_angle);
 
-    field<vector3D>* velocity_field();
-    field<float>* density_field();
+    field<vector3D> velocity_field();
+    field<float> density_field();
 
 };
 
-field<vector3D>* wavefunction::divergence(char ri){
+field<vector3D> wavefunction::divergence(char ri){
     /**
     * Converts grid coordinates to world coordinates
     *
@@ -61,15 +61,11 @@ field<vector3D>* wavefunction::divergence(char ri){
             }
         }
     }
-    return &temp_vect_field;
+    return temp_vect_field;
 }
 
-field<vector3D>* wavefunction::velocity_field(){
-    field<vector3D> temp = *divergence('i') * *real + *imaginary * *divergence('r');
-    return &temp;
-}
 
-double wavefunction::laplacian(char ri, int x, int y, int z){
+field<float> wavefunction::laplacian(char ri){
     /**
     * Converts grid coordinates to world coordinates
     *
@@ -86,26 +82,32 @@ double wavefunction::laplacian(char ri, int x, int y, int z){
         throw std::invalid_argument("Neither Real not Imaginary");
     }
 
-    if(x==0 | x == grid_ref->grid_marks[0] -1 | y==0 | y == grid_ref->grid_marks[1]-1 | z==0 | z == grid_ref->grid_marks[2]-1){
-        return 0;
-    }
-    else{
-        double laplacian = 0.0;
+    field<float> temp_float_field = field<float>();
 
-        laplacian += grid_ref->getGridValue(x+1, y, z)
-                     + grid_ref->getGridValue(x-1, y, z)
-                     + grid_ref->getGridValue(x, y+1, z)
-                     + grid_ref->getGridValue(x, y-1, z)
-                     + grid_ref->getGridValue(x, y, z+1)
-                     + grid_ref->getGridValue(x, y, z-1)
-                     - 6* grid_ref->getGridValue(x, y, z);
-        laplacian /= (grid_ref->resolution)*(grid_ref->resolution);
-
-        return laplacian;
+    for (int x=1; x<grid_ref->grid_marks[0]-1; x++){
+        for (int y=1; y<grid_ref->->grid_marks[1]; x++){
+            for (int z=1; z<grid_ref->->grid_marks[2]; x++){
+                float laplacian = 0.0;
+                laplacian += grid_ref->getGridValue(x+1, y, z)
+                             + grid_ref->getGridValue(x-1, y, z)
+                             + grid_ref->getGridValue(x, y+1, z)
+                             + grid_ref->getGridValue(x, y-1, z)
+                             + grid_ref->getGridValue(x, y, z+1)
+                             + grid_ref->getGridValue(x, y, z-1)
+                             - 6* grid_ref->getGridValue(x, y, z);
+                laplacian /= (grid_ref->resolution)*(grid_ref->resolution);
+                temp_float_field.updateGridValue(x,y,z,laplacian);
+            }
+        }
     }
+    return temp_float_field;
 }
 
 
+field<vector3D> wavefunction::velocity_field(){
+    field<vector3D> temp = divergence('i') * *real + *imaginary * divergence('r');
+    return temp;
+}
 
 void wavefunction::time_evolve(){
     /**

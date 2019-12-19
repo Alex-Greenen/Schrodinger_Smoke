@@ -12,6 +12,7 @@ using namespace std;
 template <class field_type>
 class field {
 public:
+    field(){}
     field(float x_size, float y_size, float z_size, float res){
         grid_size = {x_size, y_size, z_size};
         resolution = res;
@@ -35,39 +36,51 @@ public:
 template <class field_type>
 array<double, 3> field<field_type>::convert_to_real_coordinates(int x, int y, int z){
     /**
-    * Converts grid coordinates to world coordinates
+    * Converts grid coordinates to world coordinates. Wrap around boundary if needed.
     *
     * @param x X grid point
     * @param y Y grid point
     * @param z Z grid point
     * @return Array of (x,y,z) world coordinates
     */
+    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
+    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
+    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
+
     return {resolution*x, resolution*y, resolution*z};
 }
 
 template <class field_type>
 void field<field_type>::updateGridValue(int x, int y, int z, field_type value){
     /**
-     * Updates the value of the grid at a given point
+     * Updates the value of the grid at a given point. Wrap around boundary if needed.
      *
      * @param x X grid point
      * @param y Y grid point
      * @param z Z grid point
      * @param value Value to be stored at grid point
      */
+    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
+    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
+    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
+
     grid[x*grid_marks[1]*grid_marks[2] + y*grid_marks[1] + z] = value;
 }
 
 template <class field_type>
 field_type field<field_type>::getGridValue(int x, int y, int z){
     /**
-     * Returns the value of the grid at a given point
+     * Returns the value of the grid at a given point. Wrap around boundary if needed.
      *
      * @param x X grid point
      * @param y Y grid point
      * @param z Z grid point
      * @return Value at grid point
      */
+    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
+    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
+    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
+
     return grid[x*grid_marks[1]*grid_marks[2] + y*grid_marks[1] + z];
 }
 

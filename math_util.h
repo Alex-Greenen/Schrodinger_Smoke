@@ -90,13 +90,14 @@ field<float> laplacian(field<float>* field1){
 
 field<float> apply_element_wise(field<float>* field1, float funct(float)){
     field<float> temp = *field1;
-    for (int x=0; x<field1->grid_marks[0]; x++) {
-        for (int y = 0; y < field1->grid_marks[1]; y++) {
-            for (int z = 0; z < field1->grid_marks[2]; z++) {
+    for (int x=0; x<temp.grid_marks[0]; x++) {
+        for (int y = 0; y < temp.grid_marks[1]; y++) {
+            for (int z = 0; z < temp.grid_marks[2]; z++) {
                 temp.updateGridValue(x,y,z, funct(temp.getGridValue(x,y,z)));
             }
         }
     }
+    return temp;
 }
 
 field<float> cos(field<float>* field1){
@@ -110,17 +111,33 @@ field<float> sin(field<float>* field1){
 
 field<float> solve_poisson(field<float>* field1) {
     /**
-    * Solves poisson equation using multi-grid method;
+    * Solves poisson equation using Iterative Gauss-Seidel method with over-correction;
     *
     * @param field1 pointer to field you wish to use
     * @return solution of field
     */
 
-    field<float> solution;
+    field<float> solution = *field1;
+
+    int max_iterations= 15;
+    float omega = (2/(1+M_PI/solution.grid_marks[0]));
+
+    for (int i =0; i<max_iterations; i++){
+        for (int x=0; x<solution.grid_marks[0]; x++) {
+            for (int y = 0; y < solution.grid_marks[1]; y++) {
+                for (int z = 0; z < solution.grid_marks[2]; z++) {
+                    float sum = solution.getGridValue(x+1,y,z) + solution.getGridValue(x-1,y,z) + solution.getGridValue(x,y+1,z) + solution.getGridValue(x,y-1,z) + solution.getGridValue(x,y,z+1) + solution.getGridValue(x,y,z-1);
+                    float value = (1-omega)*solution.getGridValue(x,y,z) + omega*(sum - (solution.resolution * solution.resolution) * field1->getGridValue(x,y,z))/6;
+                    solution.updateGridValue(x,y,z,value);
+                }
+            }
+        }
+    }
 
     return solution;
 
 }
+
 
 
 

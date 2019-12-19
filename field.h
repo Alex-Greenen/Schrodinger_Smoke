@@ -5,14 +5,11 @@
 #ifndef SCHRODINGER_SMOKE_FIELD_H
 #define SCHRODINGER_SMOKE_FIELD_H
 
-
-#include "vector3D.h"
 #include <array>
 
 using namespace std;
 
 template <class field_type>
-
 class field {
 public:
     field(float x_size, float y_size, float z_size, float res){
@@ -103,7 +100,7 @@ const field<field_type> operator*(const field<field_type> v1, const field<float>
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
@@ -115,7 +112,7 @@ const field<field_type> operator*(const field<float> v1, const field<field_type>
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
@@ -123,13 +120,13 @@ const field<field_type> operator*(const field<float> v1, const field<field_type>
 }
 
 template <class field_type>
-const field<vector3D> operator/(const field<field_type> v1, const field<float> v2){
+const field<field_type> &operator/(const field<field_type>* v1, const field<float>* v2){
     /**
     * Divides a vector by a scalar field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    field<field_type> newField = field<field_type>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1.grid[i]/v2.grid[i];
+        newField.grid[i] = v1->grid[i]/v2->grid[i];
     }
     return newField;
 }

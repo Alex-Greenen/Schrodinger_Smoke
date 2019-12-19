@@ -33,6 +33,7 @@ public:
     const inline float dot(const vector3D &v1, const vector3D &v2) { return v1.e[0] *v2.e[0] + v1.e[1] *v2.e[1]  + v1.e[2] *v2.e[2];}
     const inline vector3D cross(const vector3D &v1, const vector3D &v2) {return vector3D((v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),(-(v1.e[0]*v2.e[2] - v1.e[2]*v2.e[0])),(v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));}
 
+
     float e[3];
 };
 

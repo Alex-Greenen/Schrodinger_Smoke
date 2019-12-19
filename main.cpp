@@ -1,11 +1,14 @@
 #include <iostream>
 #include "field.h"
+#include "vector3D.h"
 
 int main() {
-    vector3D v1 = vector3D(1,1,1);
-    vector3D v2 = vector3D(3,3,3);
-    vector3D v3 = v1+v2;
-    std::cout << v3[0];
+    field<float> myfield = field<float>(2,2,2,1);
+    field<float> myfield2 = field<float>(2,2,2,1);
+    myfield.updateGridValue(0, 0, 0, 4.0);
+    myfield2.updateGridValue(0, 0, 0, 2);
+    field<float> myfield3 = myfield+myfield2;
+    std::cout << myfield3.getGridValue(0,0,0) << std::endl;
     std::cout << "Hello, World!" << std::endl;
     return 0;
 }

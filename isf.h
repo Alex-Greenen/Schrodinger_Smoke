@@ -31,7 +31,6 @@ field<vector3D> isf::velocity_field(){
     return (wf1->momentum_field()+wf2->momentum_field())/(wf1->density_field(), wf2->density_field());
 }
 
-
 void isf::pressure_project(){
     field<vector3D> v = velocity_field();
     field<float> d = divergence(&v);
@@ -46,7 +45,12 @@ void isf::time_evolve(){
 }
 
 void isf::normalise() {
-
+    field<float> density = wf1->density_field()+ wf2->density_field();
+    density = apply_element_wise(&density, sqrt);
+    wf1->real = wf1->real/density;
+    wf1->imaginary = wf1->imaginary/density;
+    wf2->real = wf2->real/density;
+    wf2->imaginary = wf2->imaginary/density;
 }
 
 

@@ -12,7 +12,7 @@ using namespace std;
 template <class field_type>
 class field {
 public:
-    field(){}
+    field() = default;
     field(float x_size, float y_size, float z_size, float res){
         grid_size = {x_size, y_size, z_size};
         resolution = res;
@@ -109,6 +109,18 @@ const field<field_type> operator-(const field<field_type>& v1, const field<field
 }
 
 template <class field_type>
+const field<field_type> operator*(const field<field_type>& v1, field<field_type>& v2){
+    /**
+    * Multiplies a vector and scalar field to give a vector field
+    */
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
+    }
+    return newField;
+}
+
+template <class field_type>
 const field<field_type> operator*(const field<field_type>& v1, const field<float>& v2){
     /**
     * Multiplies a vector and scalar field to give a vector field
@@ -125,18 +137,18 @@ const field<field_type> operator*(const field<float>& v1, const field<field_type
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1.grid[i]*v2.grid[i];
-    }
-    return newField;
+    return v2*v1;
 }
 
 const field<float> operator*(const field<float>& v1, const field<float>& v2){
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    return v2*v1;
+    field<float> newField = field<float>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
+    }
+    return newField;
 }
 
 template <class field_type>
@@ -167,6 +179,18 @@ const field<field_type> operator/(const field<field_type>& v1, const field<float
     field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]/v2.grid[i];
+    }
+    return newField;
+}
+
+template <class field_type>
+const field<field_type> operator/(const field<field_type>& v1, float v2){
+    /**
+    * Divides a vector by a scalar field to give a vector field
+    */
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i]/v2;
     }
     return newField;
 }

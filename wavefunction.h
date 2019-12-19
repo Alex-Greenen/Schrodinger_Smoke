@@ -12,7 +12,7 @@
 
 class wavefunction {
 public:
-    wavefunction(){}
+    wavefunction()= default;
     wavefunction(field<float>* initial_real, field<float>* initial_imaginary, field<float>* _potential, double _hbar, double _dt):
             real(*initial_real), imaginary(*initial_imaginary), potential(*_potential),hbar(_hbar), dt(_dt){}
 
@@ -27,6 +27,7 @@ public:
     void time_evolve();
     void apply_phase(float phase_angle);
     field<vector3D> velocity_field();
+    field<vector3D> momentum_field();
     field<float> density_field();
     void normalise();
 
@@ -128,8 +129,15 @@ field<vector3D> wavefunction::velocity_field(){
     return temp;
 }
 
-field<float> wavefunction::density_field(){
+field<vector3D> wavefunction::momentum_field(){
+    field<vector3D> temp = hbar *(divergence('i') * real - imaginary * divergence('r'));
+    return temp;
+}
 
+
+field<float> wavefunction::density_field(){
+    field<float> temp = real*real + imaginary*imaginary;
+    return temp;
 }
 
 void wavefunction::normalise(){

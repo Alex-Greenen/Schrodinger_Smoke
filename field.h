@@ -76,63 +76,63 @@ field_type field<field_type>::getGridValue(int x, int y, int z){
 }
 
 template <class field_type>
-const field<field_type>* operator+(const field<field_type>* v1, const field<field_type>* v2){
+const field<field_type> operator+(const field<field_type> v1, const field<field_type> v2){
     /**
     * Adds two vector fields to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1->grid[i]+ v2->grid[i];
+        newField.grid[i] = v1.grid[i]+ v2.grid[i];
     }
-    return &newField;
+    return newField;
 }
 
 template <class field_type>
-const field<field_type>* operator-(const field<field_type> *v1, const field<field_type> *v2){
+const field<field_type> operator-(const field<field_type> v1, const field<field_type> v2){
     /**
     * Substracts two vector fields to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1->grid[i] - v2->grid[i];
+        newField.grid[i] = v1.grid[i] - v2.grid[i];
     }
-    return &newField;
+    return newField;
 }
 
 template <class field_type>
-const field<field_type>* operator*(const field<field_type> *v1, const field<float> *v2){
+const field<field_type> operator*(const field<field_type> v1, const field<float> v2){
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
+    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1->grid[i]*v2->grid[i];
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
-    return &newField;
+    return newField;
 }
 
 template <class field_type>
-const field<field_type>* operator*(const field<float> *v1, const field<field_type> *v2){
+const field<field_type> operator*(const field<float> v1, const field<field_type> v2){
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
+    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1->grid[i]*v2->grid[i];
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
-    return &newField;
+    return newField;
 }
 
 template <class field_type>
-const field<vector3D>* operator/(const field<field_type> *v1, const field<float> *v2){
+const field<vector3D> operator/(const field<field_type> v1, const field<float> v2){
     /**
     * Divides a vector by a scalar field to give a vector field
     */
-    field<vector3D> newField = field<vector3D>(v1->grid_size[0], v1->grid_size[1], v1->grid_size[2], v1->resolution);
+    field<vector3D> newField = field<vector3D>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
     for (int i = 0; i<newField.number_of_grid_nodes; i++){
-        newField.grid[i] = v1->grid[i]/v2->grid[i];
+        newField.grid[i] = v1.grid[i]/v2.grid[i];
     }
-    return &newField;
+    return newField;
 }
 
 

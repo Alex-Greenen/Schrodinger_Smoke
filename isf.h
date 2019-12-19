@@ -30,8 +30,11 @@ field<vector3D> isf::velocity_field(){
 }
 
 
-void pressure_project(){
+void isf::pressure_project(){
+    field<vector3D> v = velocity_field();
+    field<float> d = divergence(&v);
 
+    float phase = 0;
 }
 
 void isf::time_evolve(){

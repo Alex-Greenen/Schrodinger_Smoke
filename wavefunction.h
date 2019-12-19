@@ -8,16 +8,17 @@
 #include <stdexcept>
 #include "field.h"
 #include "vector3D.h"
+#include <cmath>
 
 class wavefunction {
 public:
     wavefunction(){}
     wavefunction(field<float>* initial_real, field<float>* initial_imaginary, field<float>* _potential, double _hbar, double _dt):
-            real(initial_real), imaginary(initial_imaginary), potential(_potential),hbar(_hbar), dt(_dt){}
+            real(*initial_real), imaginary(*initial_imaginary), potential(*_potential),hbar(_hbar), dt(_dt){}
 
-    field<float>* real;
-    field<float>* imaginary;
-    field<float>* potential;
+    field<float> real;
+    field<float> imaginary;
+    field<float> potential;
     double hbar;
     double dt;
 
@@ -42,21 +43,21 @@ field<vector3D> wavefunction::divergence(char ri){
     */
     field<float>* grid_ref;
     if (ri == 'r') {
-        grid_ref = real;
+        grid_ref = &real;
     } else if(ri == 'i') {
-        grid_ref = imaginary;
+        grid_ref = &imaginary;
     } else {
         throw std::invalid_argument("Neither Real not Imaginary");
     }
 
     field<vector3D> temp_vect_field = field<vector3D>();
 
-    for (int x=1; x<grid_ref->grid_marks[0]-1; x++){
-        for (int y=1; y<grid_ref->->grid_marks[1]; x++){
-            for (int z=1; z<grid_ref->->grid_marks[2]; x++){
-                float xdiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z)/grid_ref->resolution;
-                float ydiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z)/grid_ref->resolution;
-                float zdiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z)/grid_ref->resolution;
+    for (int x=0; x<grid_ref->grid_marks[0]; x++){
+        for (int y=0; y<grid_ref->grid_marks[1]; x++){
+            for (int z=0; z<grid_ref->grid_marks[2]; x++){
+                float xdiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z))/grid_ref->resolution;
+                float ydiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z))/grid_ref->resolution;
+                float zdiv = (grid_ref->getGridValue(x+1, y, z) - grid_ref->getGridValue(x-1, y, z))/grid_ref->resolution;
                 temp_vect_field.updateGridValue(x,y,z,vector3D(xdiv,ydiv,zdiv));
             }
         }
@@ -75,18 +76,18 @@ field<float> wavefunction::laplacian(char ri){
     */
     field<float>* grid_ref;
     if (ri == 'r') {
-        grid_ref = real;
+        grid_ref = &real;
     } else if(ri == 'i') {
-        grid_ref = imaginary;
+        grid_ref = &imaginary;
     } else {
         throw std::invalid_argument("Neither Real not Imaginary");
     }
 
     field<float> temp_float_field = field<float>();
 
-    for (int x=1; x<grid_ref->grid_marks[0]-1; x++){
-        for (int y=1; y<grid_ref->->grid_marks[1]; x++){
-            for (int z=1; z<grid_ref->->grid_marks[2]; x++){
+    for (int x=0; x<grid_ref->grid_marks[0]; x++){
+        for (int y=0; y<grid_ref->grid_marks[1]; x++){
+            for (int z=0; z<grid_ref->grid_marks[2]; x++){
                 float laplacian = 0.0;
                 laplacian += grid_ref->getGridValue(x+1, y, z)
                              + grid_ref->getGridValue(x-1, y, z)
@@ -105,9 +106,15 @@ field<float> wavefunction::laplacian(char ri){
 
 
 field<vector3D> wavefunction::velocity_field(){
-    field<vector3D> temp = divergence('i') * *real + *imaginary * divergence('r');
+    field<vector3D> temp = divergence('i') * real + imaginary * divergence('r');
     return temp;
 }
+
+void wavefunction::apply_phase(float phase_angle){
+    real = real * cos(phase_angle) - imaginary * sin(phase_angle);
+    imaginary = real * sin(phase_angle) - imaginary * cos(phase_angle);
+}
+
 
 void wavefunction::time_evolve(){
     /**
@@ -115,24 +122,11 @@ void wavefunction::time_evolve(){
    */
 
     // At t += dt/2, evolve R
-    for(int x = 0; x < real->grid_marks[0]; x++){
-        for(int y = 0; y < real->grid_marks[1]; y++){
-            for(int z = 0; z < real->grid_marks[2]; z++){
-                double value = real->getGridValue(x,y,z) +dt * ((-hbar*hbar/2)*laplacian('i',x,y,z) + potential->getGridValue(x,y,z)*imaginary->getGridValue(x,y,z));
-                real->updateGridValue(x,y,z, value);
-            }
-        }
-    }
 
-    // At t += dt, evolve I
-    for(int x = 0; x < real->grid_marks[0]; x++){
-        for(int y = 0; y < real->grid_marks[1]; y++){
-            for(int z = 0; z < real->grid_marks[2]; z++){
-                double value = imaginary->getGridValue(x,y,z) - dt * ((-hbar*hbar/2)*laplacian('r',x,y,z) + potential->getGridValue(x,y,z)*real->getGridValue(x,y,z));
-                imaginary->updateGridValue(x,y,z, value);
-            }
-        }
-    }
+    real = real + dt * ((-hbar*hbar/2)*laplacian('i') + potential * imaginary);
+
+    imaginary = imaginary - dt * ((-hbar*hbar/2)*laplacian('r') + potential * real);
+
 }
 
 #endif //SCHRODINGER_SMOKE_WAVEFUNCTION_H

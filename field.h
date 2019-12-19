@@ -132,8 +132,43 @@ const field<field_type> operator*(const field<float> v1, const field<field_type>
     return newField;
 }
 
+const field<float> operator*(const field<float> v1, const field<float> v2){
+    /**
+    * Multiplies a scalar and vector field to give a vector field
+    */
+    field<float> newField = field<float>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
+    }
+    return newField;
+}
+
 template <class field_type>
-const field<field_type> &operator/(const field<field_type>* v1, const field<float>* v2){
+const field<field_type> operator*(const float v1, const field<field_type> v2){
+    /**
+    * Multiplies a scalar and vector field to give a vector field
+    */
+    field<field_type> newField = field<field_type>(v2.grid_size[0], v2.grid_size[1], v2.grid_size[2], v2.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1 * v2.grid[i];
+    }
+    return newField;
+}
+
+template <class field_type>
+const field<field_type> operator*(const field<field_type> v1, const float v2){
+    /**
+    * Multiplies a scalar and vector field to give a vector field
+    */
+    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
+    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i] * v2;
+    }
+    return newField;
+}
+
+template <class field_type>
+const field<field_type> operator/(const field<field_type>* v1, const field<float>* v2){
     /**
     * Divides a vector by a scalar field to give a vector field
     */
@@ -143,6 +178,8 @@ const field<field_type> &operator/(const field<field_type>* v1, const field<floa
     }
     return newField;
 }
+
+
 
 
 #endif //SCHRODINGER_SMOKE_FIELD_H

@@ -35,7 +35,9 @@ field<vector3D> isf::velocity_field(){
 void isf::pressure_project(){
     field<vector3D> v = velocity_field();
     field<float> d = divergence(&v);
-    field<float> phase = solve_poisson();
+    field<float> phase = solve_poisson(&d);
+    wf1->apply_phase(&phase);
+    wf2->apply_phase(&phase);
 }
 
 void isf::time_evolve(){
@@ -43,6 +45,9 @@ void isf::time_evolve(){
     wf2->time_evolve();
 }
 
+void isf::normalise() {
+
+}
 
 
 #endif //SCHRODINGER_SMOKE_ISF_H

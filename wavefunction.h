@@ -24,7 +24,7 @@ public:
     double dt;
 
     void time_evolve();
-    void apply_phase(float phase_angle);
+    void apply_phase(field<float> *phase_angle);
     field<vector3D> velocity_field();
     field<vector3D> momentum_field();
     field<float> density_field();
@@ -32,9 +32,9 @@ public:
 
 };
 
-void wavefunction::apply_phase(float phase_angle){
-    float cos_angle = cos(phase_angle);
-    float sin_angle = sin(phase_angle);
+void wavefunction::apply_phase(field<float> *phase_angle){
+    field<float> cos_angle = cos(phase_angle);
+    field<float> sin_angle = sin(phase_angle);
     real = real * cos_angle - imaginary * sin_angle;
     imaginary = real * sin_angle + imaginary * cos_angle;
 }

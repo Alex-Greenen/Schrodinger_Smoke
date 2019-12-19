@@ -27,13 +27,13 @@ public:
     float resolution;
     field_type* grid;
 
-    array<double, 3> convert_to_real_coordinates(int x, int y, int z) const;
+    array<float, 3> convert_to_real_coordinates(int x, int y, int z) const;
     void updateGridValue(int x, int y, int z, field_type value);
     field_type getGridValue(int x, int y, int z) const;
 };
 
 template <class field_type>
-array<double, 3> field<field_type>::convert_to_real_coordinates(int x, int y, int z) const {
+array<float, 3> field<field_type>::convert_to_real_coordinates(int x, int y, int z) const {
     /**
     * Converts grid coordinates to world coordinates. Wrap around boundary if needed.
     *

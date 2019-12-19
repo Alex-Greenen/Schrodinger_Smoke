@@ -18,8 +18,8 @@ public:
 
     const inline vector3D operator+() const { return *this; }
     const inline vector3D operator-() const { return vector3D(-e[0], -e[1], -e[2]); }
-    const inline double operator[](int i) const { return e[i]; }
-    const inline double operator[](int i) { return e[i]; }
+    const inline float operator[](int i) const { return e[i]; }
+    const inline float operator[](int i) { return e[i]; }
     const inline float dot(const vector3D &v1, const vector3D &v2) { return v1.e[0] *v2.e[0] + v1.e[1] *v2.e[1]  + v1.e[2] *v2.e[2];}
     const inline vector3D cross(const vector3D &v1, const vector3D &v2) {return vector3D((v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),(-(v1.e[0]*v2.e[2] - v1.e[2]*v2.e[0])),(v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));}
 

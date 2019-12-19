@@ -8,14 +8,14 @@
 
 #include "field.h"
 #include "vector3D.h"
+#include <cmath>
 
 field<float> divergence(field<vector3D>* field1){
     /**
-    * computes divergence of scalar field.
+    * Computes divergence of vector field.
     *
-    * @param ri Tells which part to use: 'r' for real part, 'i' for imaginary
-    * @param pos Indicated grid location to study
-    * @return Laplacian or reel/imaginary part at grid point (x,y,z)
+    * @param field1 pointer to field you wish to use
+    * @return divergence of field
     */
 
     field<float> temp_vect_field = field<float>();
@@ -35,11 +35,10 @@ field<float> divergence(field<vector3D>* field1){
 
 field<vector3D> gradient(field<float>* field1){
     /**
-    * Converts grid coordinates to world coordinates
+    * Computes gradient of scalar field.
     *
-    * @param ri Tells which part to use: 'r' for real part, 'i' for imaginary
-    * @param pos Indicated grid location to study
-    * @return Laplacian or reel/imaginary part at grid point (x,y,z)
+    * @param field1 pointer to field you wish to use
+    * @return gradient of field
     */
 
 
@@ -61,11 +60,10 @@ field<vector3D> gradient(field<float>* field1){
 
 field<float> laplacian(field<float>* field1){
     /**
-    * Converts grid coordinates to world coordinates
+    * Computes laplacian of scalar field.
     *
-    * @param ri Tells which part to use: 'r' for real part, 'i' for imaginary
-    * @param pos Indicated grid location to study
-    * @return Laplacian or reel/imaginary part at grid point (x,y,z)
+    * @param field1 pointer to field you wish to use
+    * @return laplacian of field
     */
 
 
@@ -90,9 +88,43 @@ field<float> laplacian(field<float>* field1){
     return temp_float_field;
 }
 
+field<float> apply_element_wise(field<float>* field1, float funct(float)){
+    field<float> temp = *field1;
+    for (int x=0; x<field1->grid_marks[0]; x++) {
+        for (int y = 0; y < field1->grid_marks[1]; y++) {
+            for (int z = 0; z < field1->grid_marks[2]; z++) {
+                temp.updateGridValue(x,y,z, funct(temp.getGridValue(x,y,z)));
+            }
+        }
+    }
+}
+
+field<float> cos(field<float>* field1){
+    return apply_element_wise(field1, cos);
+}
+
+field<float> sin(field<float>* field1){
+    return apply_element_wise(field1, sin);
+}
+
+
 field<float> solve_poisson(field<float>* field1) {
+    /**
+    * Solves poisson equation using multi-grid method;
+    *
+    * @param field1 pointer to field you wish to use
+    * @return solution of field
+    */
+
+    field<float> solution;
+
+    return solution;
 
 }
+
+
+
+
 
 
 #endif //SCHRODINGER_SMOKE_MATH_UTIL_H

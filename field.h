@@ -15,7 +15,6 @@ template <class field_type>
 
 class field {
 public:
-    field(){}
     field(float x_size, float y_size, float z_size, float res){
         grid_size = {x_size, y_size, z_size};
         resolution = res;

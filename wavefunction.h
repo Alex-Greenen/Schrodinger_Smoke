@@ -6,9 +6,10 @@
 #define SCHRODINGER_SMOKE_WAVEFUNCTION_H
 
 #include <stdexcept>
+#include <cmath>
+#include "math_util.h"
 #include "field.h"
 #include "vector3D.h"
-#include <cmath>
 
 class wavefunction {
 public:

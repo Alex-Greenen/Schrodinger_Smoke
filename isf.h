@@ -6,7 +6,9 @@
 #define SCHRODINGER_SMOKE_ISF_H
 
 #include "wavefunction.h"
+#include "math_util.h"
 #include "field.h"
+#include "vector3D.h"
 
 class isf {
 public:
@@ -33,8 +35,7 @@ field<vector3D> isf::velocity_field(){
 void isf::pressure_project(){
     field<vector3D> v = velocity_field();
     field<float> d = divergence(&v);
-
-    float phase = 0;
+    field<float> phase = solve_poisson();
 }
 
 void isf::time_evolve(){

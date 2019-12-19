@@ -24,10 +24,8 @@ public:
 
     field<vector3D> divergence(char ri);
     field<float> laplacian(char ri);
-
     void time_evolve();
     void apply_phase(float phase_angle);
-
     field<vector3D> velocity_field();
     field<float> density_field();
 

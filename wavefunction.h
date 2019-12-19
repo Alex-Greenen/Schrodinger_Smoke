@@ -104,8 +104,10 @@ field<float> wavefunction::laplacian(char ri){
 }
 
 void wavefunction::apply_phase(float phase_angle){
-    real = real * cos(phase_angle) - imaginary * sin(phase_angle);
-    imaginary = real * sin(phase_angle) - imaginary * cos(phase_angle);
+    float cos_angle = cos(phase_angle);
+    float sin_angle = sin(phase_angle);
+    real = real * cos_angle - imaginary * sin_angle;
+    imaginary = real * sin_angle + imaginary * cos_angle;
 }
 
 void wavefunction::time_evolve(){

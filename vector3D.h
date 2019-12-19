@@ -8,7 +8,7 @@
 class vector3D {
 public:
     vector3D(){}
-    vector3D(float x, float y, float z){
+    vector3D(const float x, const float y, const float z){
         e[0] = x;
         e[1] = y;
         e[2] = z;

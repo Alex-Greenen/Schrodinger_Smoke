@@ -5,12 +5,13 @@
 #ifndef SCHRODINGER_SMOKE_WORLD_H
 #define SCHRODINGER_SMOKE_WORLD_H
 
-#include <array>;
+#include <array>
 
 using namespace std;
 
 class world {
 public:
+    world() = default;
     world(float x_size, float y_size, float z_size, float res){
         resolution = res;
         grid_marks = {int(x_size/res), int(y_size/res), int(z_size/res)};

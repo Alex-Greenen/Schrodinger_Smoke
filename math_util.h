@@ -120,7 +120,7 @@ field<float> solve_poisson(field<float>* field1) {
     field<float> solution = *field1;
 
     int max_iterations= 15;
-    float omega = (2/(1+M_PI/solution.grid_marks[0]));
+    float omega = float(2/(1+M_PI/solution.grid_marks[0]));
 
     for (int i =0; i<max_iterations; i++){
         for (int x=0; x<solution.grid_marks[0]; x++) {
@@ -139,7 +139,20 @@ field<float> solve_poisson(field<float>* field1) {
 }
 
 
+inline vector3D interpolate(vector3D min_x, vector3D max_x, float x){
+    return (1-x)*min_x + x*(max_x-min_x);
+}
 
+vector3D interpolate_in_cube(vector3D bfl, vector3D bfr, vector3D bbl, vector3D bbr, vector3D tfl, vector3D tfr, vector3D tbl , vector3D tbr, float x, float y, float z){
+    // uses linear interpolation
+    vector3D bf = interpolate(bfl, bfr, x);
+    vector3D bb = interpolate(bbl, bbr, x);
+    vector3D tf = interpolate(tfl, tfr, x);
+    vector3D tb = interpolate(tbl, tbr, x);
+    vector3D b = interpolate(bf, bb, y);
+    vector3D t = interpolate(tf, tb, y);
+    return interpolate(b, t, z);
+}
 
 
 

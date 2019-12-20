@@ -33,16 +33,16 @@ public:
     }
 
 };
-const inline float dot(const vector3D &v1, const vector3D &v2) const { return v1.e[0] *v2.e[0] + v1.e[1] *v2.e[1]  + v1.e[2] *v2.e[2];}
-const inline vector3D cross(const vector3D &v1, const vector3D &v2) const {return vector3D((v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),(-(v1.e[0]*v2.e[2] - v1.e[2]*v2.e[0])),(v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));}
+const inline float dot(const vector3D &v1, const vector3D &v2)  { return v1.e[0] *v2.e[0] + v1.e[1] *v2.e[1]  + v1.e[2] *v2.e[2];}
+const inline vector3D cross(const vector3D &v1, const vector3D &v2) {return vector3D((v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),(-(v1.e[0]*v2.e[2] - v1.e[2]*v2.e[0])),(v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));}
 
-const vector3D operator+(const vector3D &v1, const vector3D &v2) const {return vector3D(v1.e[0] + v2.e[0], v1.e[1] + v2.e[1], v1.e[2] + v2.e[2]);}
-const vector3D operator-(const vector3D &v1, const vector3D &v2) const {return vector3D(v1.e[0] - v2.e[0], v1.e[1] - v2.e[1], v1.e[2] - v2.e[2]);}
-const vector3D operator*(float t, const vector3D &v) const {return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
-const vector3D operator/(vector3D v, float t) const {return vector3D(v.e[0]/t, v.e[1]/t, v.e[2]/t);}
-const vector3D operator*(const vector3D &v, float t) const{return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
+const vector3D operator+(const vector3D &v1, const vector3D &v2) {return vector3D(v1.e[0] + v2.e[0], v1.e[1] + v2.e[1], v1.e[2] + v2.e[2]);}
+const vector3D operator-(const vector3D &v1, const vector3D &v2) {return vector3D(v1.e[0] - v2.e[0], v1.e[1] - v2.e[1], v1.e[2] - v2.e[2]);}
+const vector3D operator*(float t, const vector3D &v) {return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
+const vector3D operator/(vector3D v, float t) {return vector3D(v.e[0]/t, v.e[1]/t, v.e[2]/t);}
+const vector3D operator*(const vector3D &v, float t){return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
 
 //This line is for coding convenience (replaces dot() function), you cannot actually multiply two vectors.
-const inline float operator*(const vector3D &v1, const vector3D &v2) const {return dot(v1,v2);}
+const inline float operator*(const vector3D &v1, const vector3D &v2) {return dot(v1,v2);}
 
 #endif //SCHRODINGER_SMOKE_VECTOR3D_H

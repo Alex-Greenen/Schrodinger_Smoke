@@ -33,7 +33,7 @@ public:
 };
 
 void lagrangian_smoke_overlay::write_to_file(){
-    ofstream file ("example.json");
+    ofstream file ("output_particles.json");
     if (file.is_open()) {
         file << "[";
         for(int frame=0; frame<particle_locations_perframe.size()-1; ++frame){

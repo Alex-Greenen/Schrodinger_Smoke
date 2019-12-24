@@ -18,7 +18,7 @@ public:
         smoke_density_perframe.reserve(frames);
     }
 
-    vector<field<float>> smoke_density_perframe;
+    vector<field<float> > smoke_density_perframe;
     float dt;
     int frames;
     int currentFrame = 0;

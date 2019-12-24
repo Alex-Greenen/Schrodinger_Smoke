@@ -22,7 +22,7 @@ public:
         particle_locations_perframe.reserve(frames);
     }
 
-    vector<vector<vector3D>> particle_locations_perframe;
+    vector<vector<vector3D> > particle_locations_perframe;
     float dt;
     int frames;
     int currentFrame = 0;
@@ -58,7 +58,7 @@ void lagrangian_smoke_overlay::write_to_file(){
 }
 
 void lagrangian_smoke_overlay::create_particle(float x, float y, float z){
-    particle_locations_perframe[currentFrame].emplace_back(vector3D(x,y,z));
+    particle_locations_perframe[currentFrame].push_back(vector3D(x,y,z));
 }
 
 void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field){
@@ -81,7 +81,7 @@ void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field)
                                                 velocity_field->getGridValue(xbase+1,ybase+1,zbase+1),
                                                 xbetween, ybetween, zbetween);
         vector3D moved_particle = particle_locations_perframe[currentFrame][particle]+dt*velocity;
-        particle_locations_perframe[currentFrame+1].emplace_back(moved_particle);
+        particle_locations_perframe[currentFrame+1].push_back(moved_particle);
     }
 
     currentFrame++;

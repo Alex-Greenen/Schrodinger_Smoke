@@ -16,15 +16,12 @@ class wavefunction: public world {
 public:
     wavefunction()= default;
 
-    wavefunction(float x_size, float y_size, float z_size, float res, double _hbar, double _dt, float real_value):
-            world(x_size, y_size, z_size, res),hbar(_hbar), dt(_dt){
-        real = field<float>(x_size, y_size, z_size, res, 0.9801);
-        imaginary = field<float>(x_size, y_size, z_size, res, 0.01);
+    wavefunction(float x_size, float y_size, float z_size, float res, double _hbar, double _dt, float real_value = 1.0):
+            world(x_size, y_size, z_size, res), hbar(_hbar), dt(_dt){
+        real = field<float>(x_size, y_size, z_size, res, real_value);
+        imaginary = field<float>(x_size, y_size, z_size, res, 0);
         potential = field<float>(x_size, y_size, z_size, res, 0);
     }
-
-    wavefunction(field<float>* initial_real, field<float>* initial_imaginary, field<float>* _potential, double _hbar, double _dt, float x_size, float y_size, float z_size, float res):
-            world(x_size, y_size, z_size, res), real(*initial_real), imaginary(*initial_imaginary), potential(*_potential),hbar(_hbar), dt(_dt){}
 
     field<float> real;
     field<float> imaginary;

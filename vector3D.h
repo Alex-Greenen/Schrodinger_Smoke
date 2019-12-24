@@ -5,6 +5,10 @@
 #ifndef SCHRODINGER_SMOKE_VECTOR3D_H
 #define SCHRODINGER_SMOKE_VECTOR3D_H
 
+#include <iostream>
+
+using namespace std;
+
 class vector3D {
 public:
     vector3D(){
@@ -24,7 +28,10 @@ public:
     const inline vector3D operator+() const { return *this; }
     const inline vector3D operator-() const { return vector3D(-e[0], -e[1], -e[2]); }
     const inline float operator[](int i) const { return e[i]; }
-    friend ostream& operator<<(ostream& os, const vector3D& v);
+    friend ostream& operator<<(ostream& os, const vector3D& v) {
+        os << "[" << v.e[0] << "," << v.e[1] << "," << v.e[2] << "]";
+        return os;
+    }
     inline float norm() const {return e[0]*e[0]+e[1]*e[1]+e[2]*e[2];}
     void normalise() {
         float n = norm();
@@ -42,11 +49,6 @@ const vector3D operator-(const vector3D &v1, const vector3D &v2) {return vector3
 const vector3D operator*(float t, const vector3D &v) {return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
 const vector3D operator/(vector3D v, float t) {return vector3D(v.e[0]/t, v.e[1]/t, v.e[2]/t);}
 const vector3D operator*(const vector3D &v, float t){return vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);}
-ostream& operator<<(ostream& os, const vector3D& v) {
-    os << "[" << v.e[0] << "," << v.e[1] << "," << v.e[2] << "]";
-    return os;
-}
-
 
 //This line is for coding convenience (replaces dot() function), you cannot actually multiply two vectors.
 const inline float operator*(const vector3D &v1, const vector3D &v2) {return dot(v1,v2);}

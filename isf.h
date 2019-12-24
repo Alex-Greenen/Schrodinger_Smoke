@@ -14,13 +14,18 @@
 class isf: public world {
 public:
     isf() = default;
-    isf(float x_size, float y_size, float z_size, float res): world(x_size, y_size, z_size, res) {}
+    isf(float x_size, float y_size, float z_size, float res , float _dt, float _hbar): world(x_size, y_size, z_size, res), dt(_dt), hbar(_hbar) {
+        wf1 = new wavefunction(x_size, y_size, z_size, res, dt, hbar, 0.9);
+        wf2 = new wavefunction(x_size, y_size, z_size, res, dt, hbar, 0.1);
+    }
 
     field<vector3D> velocity_field();
-    void pressure_project();
     void time_evolve();
+    void pressure_project();
     void normalise();
     void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
+    void apply_velocity_induction(field<vector3D> velocity_field);
+    void post_setup();
 
     wavefunction* wf1;
     wavefunction* wf2;
@@ -69,6 +74,15 @@ void isf::vortex_ring(vector3D center, vector3D normal, float radius, float stre
             }
         }
     }
+}
+
+void isf::apply_velocity_induction(field<vector3D> velocity_field){
+
+}
+
+void isf::post_setup(){
+    pressure_project();
+    normalise();
 }
 
 #endif //SCHRODINGER_SMOKE_ISF_H

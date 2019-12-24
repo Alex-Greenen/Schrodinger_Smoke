@@ -16,7 +16,13 @@ class field: public world {
 public:
     field() = default;
     field(float x_size, float y_size, float z_size, float res): world(x_size, y_size, z_size, res){
-        grid = new field_type[number_of_grid_nodes];
+        grid = new field_type[number_of_grid_nodes]();
+    }
+    field(float x_size, float y_size, float z_size, float res, field_type value): world(x_size, y_size, z_size, res){
+        grid = new field_type[number_of_grid_nodes]();
+        for (int i =0; i< number_of_grid_nodes; i++){
+            grid[i] = value;
+        }
     }
 
     field_type* grid;

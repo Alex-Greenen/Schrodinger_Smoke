@@ -10,10 +10,14 @@
 #include "field.h"
 #include "vector3D.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
 class lagrangian_smoke_overlay: public world {
+public:
+    lagrangian_smoke_overlay() = default;
     lagrangian_smoke_overlay(float x_size, float y_size, float z_size, float res, float _dt, int _frames): world(x_size, y_size, z_size, res), dt(_dt), frames(_frames){
         particle_locations_perframe.reserve(frames);
     }
@@ -25,8 +29,33 @@ class lagrangian_smoke_overlay: public world {
 
     void create_particle(float x, float y, float z);
     void evolve_particles(field<vector3D>* velocity_field);
-
+    void write_to_file();
 };
+
+void lagrangian_smoke_overlay::write_to_file(){
+    ofstream file ("example.json");
+    if (file.is_open()) {
+        file << "[";
+        for(int frame=0; frame<particle_locations_perframe.size()-1; ++frame){
+            file << "[";
+            for(int particle=0; particle < particle_locations_perframe[frame].size()-1; ++particle){
+                file << particle_locations_perframe[frame][particle] << ",";
+            }
+            file << particle_locations_perframe[frame][particle_locations_perframe[frame].size()-1];
+            file << "],";;
+        }
+        file << "[";
+        int last_fram_index = int(particle_locations_perframe.size())-1;
+        for(int particle=0; particle < particle_locations_perframe[last_fram_index].size()-1; ++particle){
+            file << particle_locations_perframe[last_fram_index][particle] << ",";
+        }
+        file << particle_locations_perframe[last_fram_index][particle_locations_perframe[last_fram_index].size()-1];
+        file << "]";;
+        file << "]";
+        file.close();
+    }
+    else cout << "Unable to open file";
+}
 
 void lagrangian_smoke_overlay::create_particle(float x, float y, float z){
     particle_locations_perframe[currentFrame].emplace_back(vector3D(x,y,z));

@@ -4,6 +4,7 @@
 #include "wavefunction.h"
 #include "lagrangian_smoke_overlay.h"
 #include "isf.h"
+#include "world.h"
 
 float x_size = 5;
 float y_size = 5;

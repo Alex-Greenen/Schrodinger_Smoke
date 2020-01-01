@@ -23,7 +23,7 @@ field<float> divergence(field<vector3D>* field1){
     for (int x=0; x<field1->grid_marks[0]; x++){
         for (int y=0; y<field1->grid_marks[1]; y++){
             for (int z=0; z<field1->grid_marks[2]; z++){
-                vector3D diffvec = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z))/ (2*field1->resolution);
+                vector3D diffvec = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z)) / (2*field1->resolution);
                 float value = diffvec[0] + diffvec[1] + diffvec[2];
                 temp_vect_field.updateGridValue(x,y,z, value);
             }

@@ -37,12 +37,6 @@ public:
 
 };
 
-void wavefunction::apply_phase(field<float> *phase_angle){
-    field<float> cos_angle = cos(phase_angle);
-    field<float> sin_angle = sin(phase_angle);
-    real = real * cos_angle - imaginary * sin_angle;
-    imaginary = real * sin_angle + imaginary * cos_angle;
-}
 
 void wavefunction::time_evolve(){
     /**
@@ -57,6 +51,14 @@ void wavefunction::time_evolve(){
 
 }
 
+
+void wavefunction::apply_phase(field<float> *phase_angle){
+    field<float> cos_angle = cos(phase_angle);
+    field<float> sin_angle = sin(phase_angle);
+    real = real * cos_angle - imaginary * sin_angle;
+    imaginary = real * sin_angle + imaginary * cos_angle;
+}
+
 field<vector3D> wavefunction::momentum_field(){
     field<vector3D> temp = hbar *(gradient(&imaginary) * real - imaginary * gradient(&real));
     return temp;
@@ -67,6 +69,7 @@ field<float> wavefunction::density_field(){
     field<float> temp = real*real + imaginary*imaginary;
     return temp;
 }
+
 
 field<vector3D> wavefunction::velocity_field(){
     return momentum_field()/density_field();;

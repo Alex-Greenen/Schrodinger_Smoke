@@ -12,12 +12,12 @@ public:
     world(float x_size, float y_size, float z_size, float res):
             resolution(res),
             number_of_grid_nodes(grid_marks[0]*grid_marks[1]*grid_marks[2]){
+        grid_marks[0] = int(x_size/res);
+        grid_marks[1] = int(y_size/res);
+        grid_marks[2] = int(x_size/res);
         grid_size[0] = grid_marks[0]*resolution;
         grid_size[1] = grid_marks[1]*resolution;
         grid_size[2] = grid_marks[2]*resolution;
-        grid_marks[0] = int(x_size/res);
-        grid_marks[0] = int(y_size/res);
-        grid_marks[0] = int(x_size/res);
     }
 
     float grid_size[3];

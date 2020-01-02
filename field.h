@@ -8,27 +8,26 @@
 #include <array>
 #include <cmath>
 #include "world.h"
+#include "iostream"
 
 using namespace std;
 
 template <class field_type>
-class field: public world {
+class field {
 public:
     field() = default;
-    field(float x_size, float y_size, float z_size, float res): world(x_size, y_size, z_size, res){
-        grid = new field_type[number_of_grid_nodes]();
-        sample_value = field_type();
+    field(world* _w): w(_w){
+        grid = new field_type[w->number_of_grid_nodes]();
     }
-    field(float x_size, float y_size, float z_size, float res, field_type value): world(x_size, y_size, z_size, res){
-        grid = new field_type[number_of_grid_nodes]();
-        for (int i =0; i< number_of_grid_nodes; i++){
+    field(world* _w, field_type value): w(_w){
+        grid = new field_type[w->number_of_grid_nodes]();
+        for (int i =0; i< w->number_of_grid_nodes; i++){
             grid[i] = value;
-            sample_value = field_type();
         }
     }
 
     field_type* grid;
-    field_type sample_value;
+    world* w;
 
     void updateGridValue(int x, int y, int z, field_type value);
     field_type getGridValue(int x, int y, int z) const;
@@ -45,11 +44,11 @@ void field<field_type>::updateGridValue(int x, int y, int z, field_type value){
      * @param z Z grid point
      * @param value Value to be stored at grid point
      */
-    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
-    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
-    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
+    x = (x % w->grid_marks[0] + w->grid_marks[0]) % w->grid_marks[0];
+    y = (y % w->grid_marks[1] + w->grid_marks[1]) % w->grid_marks[1];
+    z = (y % w->grid_marks[2] + w->grid_marks[2]) % w->grid_marks[2];
 
-    grid[x*grid_marks[1]*grid_marks[2] + y*grid_marks[1] + z] = value;
+    grid[x*w->grid_marks[1]*w->grid_marks[2] + y*w->grid_marks[1] + z] = value;
 }
 
 template <class field_type>
@@ -62,11 +61,11 @@ field_type field<field_type>::getGridValue(int x, int y, int z) const {
      * @param z Z grid point
      * @return Value at grid point
      */
-    x = (x % grid_marks[0] + grid_marks[0]) % grid_marks[0];
-    y = (y % grid_marks[1] + grid_marks[1]) % grid_marks[1];
-    z = (y % grid_marks[2] + grid_marks[2]) % grid_marks[2];
+    x = (x % w->grid_marks[0] + w->grid_marks[0]) % w->grid_marks[0];
+    y = (y % w->grid_marks[1] + w->grid_marks[1]) % w->grid_marks[1];
+    z = (y % w->grid_marks[2] + w->grid_marks[2]) % w->grid_marks[2];
 
-    return grid[x*grid_marks[1]*grid_marks[2] + y*grid_marks[1] + z];
+    return grid[x*w->grid_marks[1]*w->grid_marks[2] + y*w->grid_marks[1] + z];
 }
 
 
@@ -79,8 +78,8 @@ const field<field_type> operator+(const field<field_type>& v1, const field<field
     /**
     * Adds two fields to give a field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]+ v2.grid[i];
     }
     return newField;
@@ -91,8 +90,8 @@ const field<field_type> operator-(const field<field_type>& v1, const field<field
     /**
     * Substracts two fields to give a field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i] - v2.grid[i];
     }
     return newField;
@@ -103,8 +102,8 @@ const field<field_type> operator*(const float v1, const field<field_type>& v2) {
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v2.grid_size[0], v2.grid_size[1], v2.grid_size[2], v2.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v2.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1 * v2.grid[i];
     }
     return newField;
@@ -123,8 +122,8 @@ const field<field_type> operator/(const field<field_type>& v1, float v2) {
     /**
     * Divides a vector by a scalar field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]/v2;
     }
     return newField;
@@ -136,8 +135,8 @@ const field<field_type> operator*(const field<field_type>& v1, field<field_type>
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
     return newField;
@@ -148,8 +147,8 @@ const field<field_type> operator*(const field<field_type>& v1, const field<float
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]*v2.grid[i];
     }
     return newField;
@@ -168,8 +167,8 @@ const field<field_type> operator/(const field<field_type>& v1, const field<float
     /**
     * Divides a vector by a scalar field to give a vector field
     */
-    field<field_type> newField = field<field_type>(v1.grid_size[0], v1.grid_size[1], v1.grid_size[2], v1.resolution);
-    for (int i = 0; i<newField.number_of_grid_nodes; i++){
+    field<field_type> newField = field<field_type>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
         newField.grid[i] = v1.grid[i]/v2.grid[i];
     }
     return newField;

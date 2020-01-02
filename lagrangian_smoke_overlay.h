@@ -15,14 +15,15 @@
 
 using namespace std;
 
-class lagrangian_smoke_overlay: public world {
+class lagrangian_smoke_overlay {
 public:
     lagrangian_smoke_overlay() = default;
-    lagrangian_smoke_overlay(float x_size, float y_size, float z_size, float res, float _dt, int _frames): world(x_size, y_size, z_size, res), dt(_dt), frames(_frames){
+    lagrangian_smoke_overlay(world* _w, float _dt, int _frames): w(_w), dt(_dt), frames(_frames){
         particle_locations_perframe.reserve(frames);
     }
 
     vector<vector<vector3D> > particle_locations_perframe;
+    world* w;
     float dt;
     int frames;
     int currentFrame = 0;
@@ -64,9 +65,9 @@ void lagrangian_smoke_overlay::create_particle(float x, float y, float z){
 void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field){
     for (int particle = 0; particle < particle_locations_perframe[currentFrame].size(); particle++){
         vector3D current_particle_pos = particle_locations_perframe[currentFrame][particle];
-        int xbase = int(current_particle_pos[0]/resolution);
-        int ybase = int(current_particle_pos[1]/resolution);
-        int zbase = int(current_particle_pos[2]/resolution);
+        int xbase = int(current_particle_pos[0]);
+        int ybase = int(current_particle_pos[1]);
+        int zbase = int(current_particle_pos[2]);
         float xbetween = current_particle_pos[0]-xbase;
         float ybetween = current_particle_pos[1]-ybase;
         float zbetween = current_particle_pos[2]-zbase;

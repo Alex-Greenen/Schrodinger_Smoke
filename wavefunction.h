@@ -12,17 +12,17 @@
 #include "vector3D.h"
 #include "world.h"
 
-class wavefunction: public world {
+class wavefunction {
 public:
     wavefunction()= default;
 
-    wavefunction(float x_size, float y_size, float z_size, float res, double _hbar, double _dt, float real_value = 1.0):
-            world(x_size, y_size, z_size, res), hbar(_hbar), dt(_dt){
-        real = field<float>(x_size, y_size, z_size, res, real_value);
-        imaginary = field<float>(x_size, y_size, z_size, res, 0);
-        potential = field<float>(x_size, y_size, z_size, res, 0);
+    wavefunction(world* _w, double _hbar, double _dt, float real_value = 1.0): w(_w), hbar(_hbar), dt(_dt){
+        real = field<float>(w, real_value);
+        imaginary = field<float>(w, 0);
+        potential = field<float>(w, 0);
     }
 
+    world* w;
     field<float> real;
     field<float> imaginary;
     field<float> potential;

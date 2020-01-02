@@ -11,13 +11,20 @@
 #include "vector3D.h"
 #include "world.h"
 
-class isf: public world {
+class isf {
 public:
     isf() = default;
-    isf(float x_size, float y_size, float z_size, float res , float _dt, float _hbar): world(x_size, y_size, z_size, res), dt(_dt), hbar(_hbar) {
-        wf1 = wavefunction(x_size, y_size, z_size, res, dt, hbar, 0.9);
-        wf2 = wavefunction(x_size, y_size, z_size, res, dt, hbar, 0.1);
+    isf(world* _w , float _dt, float _hbar): w(_w), dt(_dt), hbar(_hbar) {
+        wf1 = wavefunction(w, dt, hbar, 0.9);
+        wf2 = wavefunction(w, dt, hbar, 0.1);
     }
+
+
+    float dt;
+    float hbar;
+    wavefunction wf1;
+    wavefunction wf2;
+    world* w;
 
     field<vector3D> velocity_field();
     void time_evolve();
@@ -26,13 +33,6 @@ public:
     void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
     void apply_velocity_induction(field<vector3D> velocity_field);
     void post_setup();
-
-    wavefunction wf1;
-    wavefunction wf2;
-
-    float dt;
-    float hbar;
-    array<int,3> grid_marks;
 };
 
 field<vector3D> isf::velocity_field(){
@@ -63,9 +63,9 @@ void isf::normalise() {
 
 void isf::vortex_ring(vector3D center, vector3D normal, float radius, float strength){
     normal.normalise();
-    for (int x=0; x<grid_marks[0]; x++){
-        for (int y=0; y<grid_marks[1]; y++){
-            for (int z=0; z<grid_marks[2]; z++){
+    for (int x=0; x<w->grid_marks[0]; x++){
+        for (int y=0; y<w->grid_marks[1]; y++){
+            for (int z=0; z<w->grid_marks[2]; z++){
                 vector3D relative_position = vector3D(x-center[0],y-center[1],z-center[2]);
                 float a = dot(relative_position, relative_position) - radius*radius;
                 float b = 2 * dot(relative_position, normal);

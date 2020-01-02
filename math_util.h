@@ -18,12 +18,12 @@ field<float> divergence(field<vector3D>* field1){
     * @return divergence of field
     */
 
-    field<float> temp_vect_field = field<float>();
+    field<float> temp_vect_field = field<float>(field1->w);
 
-    for (int x=0; x<field1->grid_marks[0]; x++){
-        for (int y=0; y<field1->grid_marks[1]; y++){
-            for (int z=0; z<field1->grid_marks[2]; z++){
-                vector3D diffvec = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z)) / (2*field1->resolution);
+    for (int x=0; x<field1->w->grid_marks[0]; x++){
+        for (int y=0; y<field1->w->grid_marks[1]; y++){
+            for (int z=0; z<field1->w->grid_marks[2]; z++){
+                vector3D diffvec = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z)) / (2*field1->w->resolution);
                 float value = diffvec[0] + diffvec[1] + diffvec[2];
                 temp_vect_field.updateGridValue(x,y,z, value);
             }
@@ -42,14 +42,14 @@ field<vector3D> gradient(field<float>* field1){
     */
 
 
-    field<vector3D> temp_vect_field = field<vector3D>();
+    field<vector3D> temp_vect_field = field<vector3D>(field1->w);
 
-    for (int x=0; x<field1->grid_marks[0]; x++){
-        for (int y=0; y<field1->grid_marks[1]; y++){
-            for (int z=0; z<field1->grid_marks[2]; z++){
-                float xdiv = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z))/(2*field1->resolution);
-                float ydiv = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z))/(2*field1->resolution);
-                float zdiv = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z))/(2*field1->resolution);
+    for (int x=0; x<field1->w->grid_marks[0]; x++){
+        for (int y=0; y<field1->w->grid_marks[1]; y++){
+            for (int z=0; z<field1->w->grid_marks[2]; z++){
+                float xdiv = (field1->getGridValue(x+1, y, z) - field1->getGridValue(x-1, y, z))/(2*field1->w->resolution);
+                float ydiv = (field1->getGridValue(1, y+1, z) - field1->getGridValue(x, y-1, z))/(2*field1->w->resolution);
+                float zdiv = (field1->getGridValue(x, y, z+1) - field1->getGridValue(x, y, z-1))/(2*field1->w->resolution);
                 temp_vect_field.updateGridValue(x,y,z,vector3D(xdiv,ydiv,zdiv));
             }
         }
@@ -67,11 +67,11 @@ field<float> laplacian(field<float>* field1){
     */
 
 
-    field<float> temp_float_field = field<float>();
+    field<float> temp_float_field = field<float>(field1->w);
 
-    for (int x=0; x<field1->grid_marks[0]; x++){
-        for (int y=0; y<field1->grid_marks[1]; y++){
-            for (int z=0; z<field1->grid_marks[2]; z++){
+    for (int x=0; x<field1->w->grid_marks[0]; x++){
+        for (int y=0; y<field1->w->grid_marks[1]; y++){
+            for (int z=0; z<field1->w->grid_marks[2]; z++){
                 float laplacian = 0.0;
                 laplacian += field1->getGridValue(x+1, y, z)
                              + field1->getGridValue(x-1, y, z)
@@ -80,7 +80,7 @@ field<float> laplacian(field<float>* field1){
                              + field1->getGridValue(x, y, z+1)
                              + field1->getGridValue(x, y, z-1)
                              - 6* field1->getGridValue(x, y, z);
-                laplacian /= (field1->resolution)*(field1->resolution);
+                laplacian /= (field1->w->resolution)*(field1->w->resolution);
                 temp_float_field.updateGridValue(x,y,z,laplacian);
             }
         }
@@ -90,9 +90,9 @@ field<float> laplacian(field<float>* field1){
 
 field<float> apply_element_wise(field<float>* field1, float funct(float)){
     field<float> temp = *field1;
-    for (int x=0; x<temp.grid_marks[0]; x++) {
-        for (int y = 0; y < temp.grid_marks[1]; y++) {
-            for (int z = 0; z < temp.grid_marks[2]; z++) {
+    for (int x=0; x<temp.w->grid_marks[0]; x++) {
+        for (int y = 0; y < temp.w->grid_marks[1]; y++) {
+            for (int z = 0; z < temp.w->grid_marks[2]; z++) {
                 temp.updateGridValue(x,y,z, funct(temp.getGridValue(x,y,z)));
             }
         }
@@ -120,14 +120,14 @@ field<float> solve_poisson(field<float>* field1) {
     field<float> solution = *field1;
 
     int max_iterations= 15;
-    float omega = float(2/(1+M_PI/solution.grid_marks[0]));
+    float omega = float(2/(1+M_PI/solution.w->grid_marks[0]));
 
     for (int i =0; i<max_iterations; i++){
-        for (int x=0; x<solution.grid_marks[0]; x++) {
-            for (int y = 0; y < solution.grid_marks[1]; y++) {
-                for (int z = 0; z < solution.grid_marks[2]; z++) {
+        for (int x=0; x<solution.w->grid_marks[0]; x++) {
+            for (int y = 0; y < solution.w->grid_marks[1]; y++) {
+                for (int z = 0; z < solution.w->grid_marks[2]; z++) {
                     float sum = solution.getGridValue(x+1,y,z) + solution.getGridValue(x-1,y,z) + solution.getGridValue(x,y+1,z) + solution.getGridValue(x,y-1,z) + solution.getGridValue(x,y,z+1) + solution.getGridValue(x,y,z-1);
-                    float value = (1-omega)*solution.getGridValue(x,y,z) + omega*(sum - (solution.resolution * solution.resolution) * field1->getGridValue(x,y,z))/6;
+                    float value = (1-omega)*solution.getGridValue(x,y,z) + omega*(sum - (solution.w->resolution * solution.w->resolution) * field1->getGridValue(x,y,z))/6;
                     solution.updateGridValue(x,y,z,value);
                 }
             }

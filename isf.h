@@ -35,10 +35,6 @@ public:
     void post_setup();
 };
 
-field<vector3D> isf::velocity_field(){
-    return (wf1.momentum_field()+wf2.momentum_field())/(wf1.density_field(), wf2.density_field());
-}
-
 void isf::pressure_project(){
     field<vector3D> v = velocity_field();
     field<float> d = divergence(&v);
@@ -61,6 +57,15 @@ void isf::normalise() {
     wf2.imaginary = wf2.imaginary/density;
 }
 
+void isf::post_setup(){
+    pressure_project();
+    normalise();
+}
+
+field<vector3D> isf::velocity_field(){
+    return (wf1.momentum_field()+wf2.momentum_field())/(wf1.density_field(), wf2.density_field());
+}
+
 void isf::vortex_ring(vector3D center, vector3D normal, float radius, float strength){
     normal.normalise();
     for (int x=0; x<w->grid_marks[0]; x++){
@@ -78,11 +83,6 @@ void isf::vortex_ring(vector3D center, vector3D normal, float radius, float stre
 
 void isf::apply_velocity_induction(field<vector3D> velocity_field){
 
-}
-
-void isf::post_setup(){
-    pressure_project();
-    normalise();
 }
 
 #endif //SCHRODINGER_SMOKE_ISF_H

@@ -19,7 +19,7 @@ class lagrangian_smoke_overlay {
 public:
     lagrangian_smoke_overlay() = default;
     lagrangian_smoke_overlay(world* _w, float _dt, int _frames): w(_w), dt(_dt), frames(_frames){
-        particle_locations_perframe.reserve(frames);
+        particle_locations_perframe = vector<vector<vector3D> >(frames, vector<vector3D>(0));
     }
 
     vector<vector<vector3D> > particle_locations_perframe;
@@ -36,23 +36,34 @@ public:
 void lagrangian_smoke_overlay::write_to_file(){
     ofstream file ("output_particles.json");
     if (file.is_open()) {
-        file << "[";
-        for(int frame=0; frame<particle_locations_perframe.size()-1; ++frame){
-            file << "[";
-            for(int particle=0; particle < particle_locations_perframe[frame].size()-1; ++particle){
-                file << particle_locations_perframe[frame][particle] << ",";
+        file << "[\n";
+
+        int frames_numb = int(particle_locations_perframe.size())-1;
+
+        for(int frame=0; frame < frames_numb-1; frame++){
+            int particle_numb = int(particle_locations_perframe[frame].size()) -1;
+            if (particle_numb != -1){ //no particles
+                file << "     [\n";
+                for(int particle=0; particle < particle_numb; particle++){
+                    file << "          " << particle_locations_perframe[frame][particle] << ",\n";
+                }
+                file << "          " << particle_locations_perframe[frame][particle_numb] <<"\n";
+                file << "     ],\n";
             }
-            file << particle_locations_perframe[frame][particle_locations_perframe[frame].size()-1];
-            file << "],";;
         }
-        file << "[";
-        int last_fram_index = int(particle_locations_perframe.size())-1;
-        for(int particle=0; particle < particle_locations_perframe[last_fram_index].size()-1; ++particle){
-            file << particle_locations_perframe[last_fram_index][particle] << ",";
+        int particle_numb = int(particle_locations_perframe[frames_numb].size()) -1;
+        if (particle_numb != -1){ //no particles
+            file << "     [\n";
+            for(int particle=0; particle < particle_numb; particle++){
+                file << "          " << particle_locations_perframe[frames_numb][particle] << ",\n";
+            }
+            file << "          " << particle_locations_perframe[frames_numb][particle_numb] <<"\n";
+            file << "     ]\n";
         }
-        file << particle_locations_perframe[last_fram_index][particle_locations_perframe[last_fram_index].size()-1];
-        file << "]";;
-        file << "]";
+        else{
+            file << "     []\n";
+        }
+        file << "]\n";
         file.close();
     }
     else cout << "Unable to open file";
@@ -84,7 +95,6 @@ void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field)
         vector3D moved_particle = particle_locations_perframe[currentFrame][particle]+dt*velocity;
         particle_locations_perframe[currentFrame+1].push_back(moved_particle);
     }
-
     currentFrame++;
 }
 

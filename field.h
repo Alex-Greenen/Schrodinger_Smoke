@@ -18,6 +18,9 @@ public:
     field() = default;
     field(world* _w): w(_w){
         grid = new field_type[w->number_of_grid_nodes]();
+        for (int i =0; i< w->number_of_grid_nodes; i++){
+            grid[i] = field_type();
+        }
     }
     field(world* _w, field_type value): w(_w){
         grid = new field_type[w->number_of_grid_nodes]();

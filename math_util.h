@@ -154,6 +154,9 @@ vector3D interpolate_in_cube(vector3D bfl, vector3D bfr, vector3D bbl, vector3D 
     return interpolate(b, t, z);
 }
 
+float rand01(){
+    return float(rand())/RAND_MAX;
+}
 
 
 

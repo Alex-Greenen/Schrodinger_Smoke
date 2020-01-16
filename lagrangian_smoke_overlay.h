@@ -93,7 +93,8 @@ void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field)
                                                 velocity_field->getGridValue(xbase+1,ybase+1,zbase+1),
                                                 xbetween, ybetween, zbetween);
         vector3D moved_particle = particle_locations_perframe[currentFrame][particle]+dt*velocity;
-        particle_locations_perframe[currentFrame+1].push_back(moved_particle);
+        vector3D traverse_particle = vector3D(fmod(moved_particle[0], w->grid_size[0]),fmod(moved_particle[1], w->grid_size[1]), fmod(moved_particle[2], w->grid_size[2]));
+        particle_locations_perframe[currentFrame+1].push_back(traverse_particle);
     }
     currentFrame++;
 }

@@ -17,10 +17,19 @@ int main() {
 
     world* w = new world(x_size, y_size, z_size, res);
     isf schr_flow = isf(w, dt, hbar);
+    field<vector3D> velocityField = field<vector3D>(w);
+    for (int x = 0; x<w->grid_marks[0]; x++) {
+        for (int y = int(w->grid_marks[1] / 3); y < int(3 * w->grid_marks[1] / 2); y++) {
+            for (int z = int(w->grid_marks[2] / 3); z < int(3 * w->grid_marks[2] / 2); z++) {
+                velocityField.updateGridValue(x,y,z,vector3D(1,0,0));
+            }
+        }
+    }
+    schr_flow.set_velocity_induction(&velocityField);
     schr_flow.post_setup();
 
     lagrangian_smoke_overlay buffer = lagrangian_smoke_overlay (w, dt, frames);
-    for (int temp = 1; temp < 20 ; ++temp){
+    for (int temp = 1; temp < 60 ; ++temp){
         buffer.create_particle(rand01()*x_size, rand01()*y_size, rand01()*z_size);
     }
 
@@ -29,7 +38,7 @@ int main() {
         schr_flow.pressure_project();
         schr_flow.normalise();
         field<vector3D> flow = schr_flow.velocity_field();
-        buffer.evolve_particles(&flow);
+        buffer.evolve_particles(&velocityField);
     }
     buffer.write_to_file();
 

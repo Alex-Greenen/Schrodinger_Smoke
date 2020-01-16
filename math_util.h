@@ -5,7 +5,6 @@
 #ifndef SCHRODINGER_SMOKE_MATH_UTIL_H
 #define SCHRODINGER_SMOKE_MATH_UTIL_H
 
-
 #include "field.h"
 #include "vector3D.h"
 #include <cmath>
@@ -119,7 +118,7 @@ field<float> solve_poisson(field<float>* field1) {
 
     field<float> solution = *field1;
 
-    int max_iterations= 15;
+    int max_iterations= 40;
     float omega = float(2/(1+M_PI/solution.w->grid_marks[0]));
 
     for (int i =0; i<max_iterations; i++){

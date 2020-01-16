@@ -31,7 +31,9 @@ public:
     void pressure_project();
     void normalise();
     void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
-    void apply_velocity_induction(field<vector3D> velocity_field);
+    void apply_velocity_induction(field<vector3D>* velocity_field);
+    void set_velocity_induction(field<vector3D>* velocity_field);
+    void apply_vorticity_induction(field<vector3D>* vorticity_field);
     void post_setup();
 };
 
@@ -81,7 +83,41 @@ void isf::vortex_ring(vector3D center, vector3D normal, float radius, float stre
     }
 }
 
-void isf::apply_velocity_induction(field<vector3D> velocity_field){
+void isf::apply_velocity_induction(field<vector3D>* velocity_field){
+    field<float> phase_field = field<float>(w);
+    for (int x = 0; x< w->grid_marks[0]; x += 1){
+        for (int y = 0; y< w->grid_marks[1]; y += 1){
+            for (int z = 0; z< w->grid_marks[2]; z += 1){
+                vector3D velocity = velocity_field->getGridValue(x,y,z);
+                float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
+                phase_field.updateGridValue(x,y,z, phase);
+            }
+        }
+    }
+    wf1.apply_phase(&phase_field);
+    wf2.apply_phase(&phase_field);
+}
+
+void isf::set_velocity_induction(field<vector3D>* velocity_field){
+    field<float> phase_field = field<float>(w);
+    for (int x = 0; x< w->grid_marks[0]; x += 1){
+        for (int y = 0; y< w->grid_marks[1]; y += 1){
+            for (int z = 0; z< w->grid_marks[2]; z += 1){
+                vector3D velocity = velocity_field->getGridValue(x,y,z);
+                float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
+                phase_field.updateGridValue(x,y,z, phase);
+            }
+        }
+    }
+    field<float> wf1density = wf1.density_field();
+    wf1.real = cos(&phase_field)*wf1density;
+    wf1.imaginary = sin(&phase_field)*wf1density;
+    field<float> wf2density = wf2.density_field();
+    wf2.real = cos(&phase_field)*wf2density;
+    wf2.imaginary = sin(&phase_field)*wf2density;
+}
+
+void isf::apply_vorticity_induction(field<vector3D>* velocity_field){
 
 }
 

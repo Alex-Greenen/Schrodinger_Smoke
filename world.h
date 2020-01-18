@@ -6,6 +6,8 @@
 #define SCHRODINGER_SMOKE_WORLD_H
 
 
+#include "vector3D.h"
+
 class world {
 public:
     world() = default;
@@ -24,6 +26,15 @@ public:
     int grid_marks[3];
     int number_of_grid_nodes;
     float resolution;
+
+    vector3D convert_to_worldCoordintates(vector3D gridPoint){
+        return gridPoint*resolution;
+    }
+
+    vector3D convert_to_gridCoordintates(vector3D worldPoint){
+        return worldPoint/resolution;
+    }
+
 };
 
 

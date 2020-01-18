@@ -76,12 +76,13 @@ void lagrangian_smoke_overlay::create_particle(float x, float y, float z){
 void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field){
     for (int particle = 0; particle < particle_locations_perframe[currentFrame].size(); particle++){
         vector3D current_particle_pos = particle_locations_perframe[currentFrame][particle];
-        int xbase = int(current_particle_pos[0]);
-        int ybase = int(current_particle_pos[1]);
-        int zbase = int(current_particle_pos[2]);
-        float xbetween = current_particle_pos[0]-xbase;
-        float ybetween = current_particle_pos[1]-ybase;
-        float zbetween = current_particle_pos[2]-zbase;
+        // dividing by the resolution converts us from world point to grid point
+        int xbase = int(current_particle_pos[0]/w->resolution);
+        int ybase = int(current_particle_pos[1]/w->resolution);
+        int zbase = int(current_particle_pos[2]/w->resolution);
+        float xbetween = current_particle_pos[0]/w->resolution-xbase;
+        float ybetween = current_particle_pos[1]/w->resolution-ybase;
+        float zbetween = current_particle_pos[2]/w->resolution-zbase;
         // use linear interpolation between grid points
         vector3D velocity = interpolate_in_cube(velocity_field->getGridValue(xbase,ybase,zbase),
                                                 velocity_field->getGridValue(xbase+1,ybase,zbase),

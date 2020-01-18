@@ -223,4 +223,15 @@ float rand01() {
 }
 
 
+float randnp1() {
+    /**
+    * Generates a random number between -1 and 1
+    *
+    * @return random number between -1 and 1
+    */
+    return -1 + 2*rand01();
+}
+
+
+
 #endif //SCHRODINGER_SMOKE_MATH_UTIL_H

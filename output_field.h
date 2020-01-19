@@ -37,10 +37,10 @@ public:
 void output_field::write_to_file(){
     ofstream file ("output_field.json");
     if (file.is_open()) {
-        file << "FieldType:" << typeid(sample_value).name() << "\n";
-        file << w->grid_marks << "\n";
 
         file << "[\n";
+
+        file << w->grid_marks << ",\n";
 
         int frames_numb = int(vectors_perframe.size())-1;
         int vector_numb = w->number_of_grid_nodes;

@@ -11,17 +11,19 @@ float z_size = 3;
 float res = 0.1;
 float hbar = 0.5;
 float dt = 0.1;
-int frames = 50;
+int frames = 20;
 
 int main() {
 
     std::cout << "Setting up. \n";
     world* w = new world(x_size, y_size, z_size, res);
     isf schr_flow = isf(w, dt, hbar);
+
+    //Create a Jet
     field<vector3D> velocityField = field<vector3D>(w);
     for (int x = 0; x<w->grid_marks[0]; x++) {
         for (int y = 0; y<w->grid_marks[1]; y++) {
-            float r_from_center = sqrt((x - x<w->grid_marks[0]/2)*(x - x<w->grid_marks[0]/2) + (y - x<w->grid_marks[1]/2)*(y - x<w->grid_marks[1]/2));
+            float r_from_center = float(sqrt((x - w->grid_marks[0]/2)*(x - w->grid_marks[0]/2) + (y - w->grid_marks[1]/2)*(y - w->grid_marks[1]/2)));
             if ( r_from_center < w->grid_marks[x]/6 ) {
                 for (int z = 0; z < int(w->grid_marks[2] / 3); z++) {
                     velocityField.updateGridValue(x, y, z, vector3D(0, 0, 1));

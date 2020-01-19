@@ -1,9 +1,10 @@
 //
-// Created by Alex Greenen on 1/18/20.
+// Created by Alex Greenen on 1/19/20.
 //
 
-#ifndef SCHRODINGER_SMOKE_OUTPUT_TO_FILE_H
-#define SCHRODINGER_SMOKE_OUTPUT_TO_FILE_H
+#ifndef SCHRODINGER_SMOKE_OUTPUT_FIELD_H
+#define SCHRODINGER_SMOKE_OUTPUT_FIELD_H
+
 
 #include "wavefunction.h"
 #include "math_util.h"
@@ -19,22 +20,29 @@ template <class field_type>
 class output_field {
 public:
     output_field() = default;
-    output_field(world* _w, float _dt): w(_w), dt(_dt){
+    output_field(world* _w): w(_w){
         vectors_perframe = vector<vector<field_type> >(0, vector<field_type>(0));
-        sample_value = field_type();
     }
 
-    vector<vector<field_type>> vectors_perframe;
+    vector<vector<field_type> > vectors_perframe;
     world* w;
-    float dt;
-    int currentFrame = 0;
-    field_type sample_value;
 
-    void add_vectorField( field<field_type> *v);
+    void add_vectorfield( field<field_type> *v);
     void write_to_file();
 };
 
-void output_field::write_to_file(){
+
+template <class field_type>
+void output_field::add_vectorfield( field<field_type> *v){
+    int gridPoints = w->number_of_grid_nodes;
+    vector<field_type> frame = vector<field_type>(gridPoints, field_type());
+    for (int vector_index=0; vector_index < gridPoints; vector_index++){
+        frame.push_back(v->w[vector_index]);
+    }
+    vectors_perframe.push_back(frame);
+}
+
+void output_field::write_to_file() {
     ofstream file ("output_field.json");
     if (file.is_open()) {
 
@@ -67,16 +75,7 @@ void output_field::write_to_file(){
     else cout << "Unable to open file";
 }
 
-template <class field_type>
-void output_field:: add_vectorField( field<field_type> *v){
-    int gridPoints = w->number_of_grid_nodes;
-    vector<field_type> frame = vector<field_type>(gridPoints, field_type());
-    for (int vector_index=0; vector_index < gridPoints; vector_index++){
-        frame.push_back(v->w[vector_index]);
-    }
-    vectors_perframe.push_back(frame);
-}
 
 
 
-#endif //SCHRODINGER_SMOKE_OUTPUT_TO_FILE_H
+#endif //SCHRODINGER_SMOKE_OUTPUT_FIELD_H

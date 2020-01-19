@@ -2,8 +2,8 @@
 // Created by Alex Greenen on 12/19/19.
 //
 
-#ifndef SCHRODINGER_SMOKE_LAGRANGIAN_SMOKE_OVERLAY_H
-#define SCHRODINGER_SMOKE_LAGRANGIAN_SMOKE_OVERLAY_H
+#ifndef SCHRODINGER_OUTPUT_PARTICLE_H
+#define SCHRODINGER_OUTPUT_PARTICLE_H
 
 #include "wavefunction.h"
 #include "math_util.h"
@@ -15,10 +15,10 @@
 
 using namespace std;
 
-class lagrangian_smoke_overlay {
+class output_particle {
 public:
-    lagrangian_smoke_overlay() = default;
-    lagrangian_smoke_overlay(world* _w, float _dt, int _frames): w(_w), dt(_dt), frames(_frames){
+    output_particle() = default;
+    output_particle(world* _w, float _dt, int _frames): w(_w), dt(_dt), frames(_frames){
         particle_locations_perframe = vector<vector<vector3D> >(frames, vector<vector3D>(0));
     }
 
@@ -33,7 +33,7 @@ public:
     void write_to_file();
 };
 
-void lagrangian_smoke_overlay::write_to_file(){
+void output_particle::write_to_file(){
     ofstream file ("output_particles.json");
     if (file.is_open()) {
         file << "[\n";
@@ -69,11 +69,11 @@ void lagrangian_smoke_overlay::write_to_file(){
     else cout << "Unable to open file";
 }
 
-void lagrangian_smoke_overlay::create_particle(float x, float y, float z){
+void output_particle::create_particle(float x, float y, float z){
     particle_locations_perframe[currentFrame].push_back(vector3D(x,y,z));
 }
 
-void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field){
+void output_particle::evolve_particles(field<vector3D>* velocity_field){
     for (int particle = 0; particle < particle_locations_perframe[currentFrame].size(); particle++){
         vector3D current_particle_pos = particle_locations_perframe[currentFrame][particle];
         // dividing by the resolution converts us from world point to grid point
@@ -100,4 +100,4 @@ void lagrangian_smoke_overlay::evolve_particles(field<vector3D>* velocity_field)
 }
 
 
-#endif //SCHRODINGER_SMOKE_LAGRANGIAN_SMOKE_OVERLAY_H
+#endif //SCHRODINGER_OUTPUT_PARTICLE_H

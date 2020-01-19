@@ -51,7 +51,7 @@ void field<field_type>::updateGridValue(int x, int y, int z, field_type value){
     y = (y % w->grid_marks[1] + w->grid_marks[1]) % w->grid_marks[1];
     z = (y % w->grid_marks[2] + w->grid_marks[2]) % w->grid_marks[2];
 
-    grid[x*w->grid_marks[1]*w->grid_marks[2] + y*w->grid_marks[1] + z] = value;
+    grid[z*w->grid_marks[0]*w->grid_marks[1] + y*w->grid_marks[0] + x] = value;
 }
 
 template <class field_type>
@@ -68,7 +68,7 @@ field_type field<field_type>::getGridValue(int x, int y, int z) const {
     y = (y % w->grid_marks[1] + w->grid_marks[1]) % w->grid_marks[1];
     z = (y % w->grid_marks[2] + w->grid_marks[2]) % w->grid_marks[2];
 
-    return grid[x*w->grid_marks[1]*w->grid_marks[2] + y*w->grid_marks[1] + z];
+    return grid[z*w->grid_marks[0]*w->grid_marks[1] + y*w->grid_marks[0] + x];
 }
 
 

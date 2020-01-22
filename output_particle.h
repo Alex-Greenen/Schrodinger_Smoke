@@ -18,14 +18,13 @@ using namespace std;
 class output_particle {
 public:
     output_particle() = default;
-    output_particle(world* _w, float _dt, int _frames): w(_w), dt(_dt), frames(_frames){
-        particle_locations_perframe = vector<vector<vector3D> >(frames, vector<vector3D>(0));
+    output_particle(world* _w, float _dt, int _frames): w(_w), dt(_dt){
+        particle_locations_perframe.push_back(vector<vector3D>(0));
     }
 
     vector<vector<vector3D> > particle_locations_perframe;
     world* w;
     float dt;
-    int frames;
     int currentFrame = 0;
 
     void create_particle(float x, float y, float z);
@@ -74,6 +73,7 @@ void output_particle::create_particle(float x, float y, float z){
 }
 
 void output_particle::evolve_particles(field<vector3D>* velocity_field){
+    particle_locations_perframe.push_back(vector<vector3D>(0));
     for (int particle = 0; particle < particle_locations_perframe[currentFrame].size(); particle++){
         vector3D current_particle_pos = particle_locations_perframe[currentFrame][particle];
         // dividing by the resolution converts us from world point to grid point

@@ -76,15 +76,15 @@ field<float> laplacian(field<float> *field1) {
     for (int x = 0; x < field1->w->grid_marks[0]; x++) {
         for (int y = 0; y < field1->w->grid_marks[1]; y++) {
             for (int z = 0; z < field1->w->grid_marks[2]; z++) {
-                float laplacian = 0.0;
-                laplacian += field1->getGridValue(x + 1, y, z)
+                float laplacian =
+                               field1->getGridValue(x + 1, y, z)
                              + field1->getGridValue(x - 1, y, z)
                              + field1->getGridValue(x, y + 1, z)
                              + field1->getGridValue(x, y - 1, z)
                              + field1->getGridValue(x, y, z + 1)
                              + field1->getGridValue(x, y, z - 1)
                              - 6 * field1->getGridValue(x, y, z);
-                laplacian /= (field1->w->resolution) * (field1->w->resolution);
+                laplacian /= ( (field1->w->resolution) * (field1->w->resolution));
                 temp_float_field.updateGridValue(x, y, z, laplacian);
             }
         }
@@ -92,8 +92,7 @@ field<float> laplacian(field<float> *field1) {
     return temp_float_field;
 }
 
-template<class field_type>
-field<field_type> apply_element_wise(field<field_type> *field1, field_type funct(field_type)) {
+field<float> apply_element_wise(field<float> *field1, float funct(float)) {
     /**
     * Applies an operation to every element in the field
     *

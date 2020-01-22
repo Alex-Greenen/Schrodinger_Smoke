@@ -27,53 +27,50 @@ public:
     vector<vector<field_type> > vectors_perframe;
     world* w;
 
-    void add_vectorfield( field<field_type> *v);
-    void write_to_file();
-};
-
-
-template <class field_type>
-void output_field::add_vectorfield( field<field_type> *v){
-    int gridPoints = w->number_of_grid_nodes;
-    vector<field_type> frame = vector<field_type>(gridPoints, field_type());
-    for (int vector_index=0; vector_index < gridPoints; vector_index++){
-        frame.push_back(v->w[vector_index]);
+    void add_vectorfield( field<field_type> *vect_field){
+        int gridPoints = w->number_of_grid_nodes;
+        vector<field_type> frame = vector<field_type>(gridPoints, field_type());
+        for (int vector_index=0; vector_index < gridPoints; vector_index++){
+            frame.push_back(vect_field->grid[vector_index]);
+        }
+        vectors_perframe.push_back(frame);
     }
-    vectors_perframe.push_back(frame);
-}
 
-void output_field::write_to_file() {
-    ofstream file ("output_field.json");
-    if (file.is_open()) {
 
-        file << "[\n";
+    void write_to_file(){
+        ofstream file ("output_field.json");
+        if (file.is_open()) {
 
-        file << w->grid_marks << ",\n";
+            file << "[\n";
 
-        int frames_numb = int(vectors_perframe.size())-1;
-        int vector_numb = w->number_of_grid_nodes;
+            file << "     [" << w->grid_marks[0] << ", " << w->grid_marks[1] << ", " << w->grid_marks[2] << "],\n";
 
-        for(int frame=0; frame < frames_numb-1; frame++){
+            int frames_numb = int(vectors_perframe.size())-1;
+            int vector_numb = w->number_of_grid_nodes;
+
+            for(int frame=0; frame < frames_numb-1; frame++){
+                file << "     [\n";
+                for(int vector_index=0; vector_index < vector_numb; vector_index++){
+                    file << "          " << vectors_perframe[frame][vector_index] << ",\n";
+                }
+                file << "          " << vectors_perframe[frame][vector_numb] <<"\n";
+                file << "     ],\n";
+            }
+
             file << "     [\n";
             for(int vector_index=0; vector_index < vector_numb; vector_index++){
-                file << "          " << vectors_perframe[frame][vector_index] << ",\n";
+                file << "          " << vectors_perframe[frames_numb][vector_index] << ",\n";
             }
-            file << "          " << vectors_perframe[frame][vector_numb] <<"\n";
-            file << "     ],\n";
-        }
+            file << "          " << vectors_perframe[frames_numb][vector_numb] <<"\n";
+            file << "     ]\n";
 
-        file << "     [\n";
-        for(int vector_index=0; vector_index < vector_numb; vector_index++){
-            file << "          " << vectors_perframe[frames_numb][vector_index] << ",\n";
+            file << "]\n";
+            file.close();
         }
-        file << "          " << vectors_perframe[frames_numb][vector_numb] <<"\n";
-        file << "     ]\n";
-
-        file << "]\n";
-        file.close();
+        else cout << "Unable to open file";
     }
-    else cout << "Unable to open file";
-}
+};
+
 
 
 

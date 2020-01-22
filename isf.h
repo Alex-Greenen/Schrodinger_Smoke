@@ -118,7 +118,7 @@ void isf::set_velocity_induction(field<vector3D>* velocity_field){
 }
 
 void isf::apply_vorticity_induction(field<vector3D>* velocity_field){
-
+    //This function is not yet written
 }
 
 #endif //SCHRODINGER_SMOKE_ISF_H

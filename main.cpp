@@ -4,14 +4,20 @@
 #include "wavefunction.h"
 #include "isf.h"
 #include "output_particle.h"
+#include "output_field.h"
 
-float x_size = 3;
-float y_size = 3;
-float z_size = 3;
-float res = 0.1;
+#include <iostream>
+#include <vector>
+
+float x_size = 9;
+float y_size = 9;
+float z_size = 9;
+float res = 0.5;
 float hbar = 0.5;
 float dt = 0.1;
 int frames = 20;
+
+using namespace std;
 
 int main() {
 
@@ -31,6 +37,7 @@ int main() {
             }
         }
     }
+
     schr_flow.set_velocity_induction(&velocityField);
     schr_flow.post_setup();
 
@@ -57,7 +64,7 @@ int main() {
 
 }
 
-
+//
 //int main() {
 //
 //    std::cout << "Setting up. \n";
@@ -87,7 +94,7 @@ int main() {
 //        schr_flow.pressure_project();
 //        schr_flow.normalise();
 //        field<vector3D> flow = schr_flow.velocity_field();
-//        buffer.add_vectorField(&flow);
+//        buffer.add_vectorfield(&flow);
 //        std::cout << "Simulated frame " << (frame+1) << ".\n";
 //    }
 //    std::cout << "Writing to file.\n";

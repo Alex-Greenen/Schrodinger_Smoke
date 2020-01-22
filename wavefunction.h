@@ -43,8 +43,9 @@ void wavefunction::time_evolve(){
     * Evolves the wavefunction using the half-step formula.
    */
     // At t += dt/2, evolve R
-    real = real + dt * ((-hbar/2)*laplacian(&imaginary) + (1/hbar)* potential * imaginary);
-    imaginary = imaginary - dt * ((hbar/2)*laplacian(&real) - (1/hbar) * potential * real);
+    field<float> realtemp = real + dt * ((-hbar/2)*laplacian(&imaginary) + (1/hbar)* potential * imaginary);
+    imaginary = imaginary + dt * ((hbar/2)*laplacian(&real) - (1/hbar) * potential * real);
+    real = realtemp;
 
 }
 

@@ -13,7 +13,7 @@ float x_size = 9;
 float y_size = 9;
 float z_size = 9;
 float res = 0.5;
-float hbar = 0.5;
+float hbar = 0.05;
 float dt = 0.1;
 int frames = 20;
 

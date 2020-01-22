@@ -140,7 +140,7 @@ const field<field_type> operator/(const field<field_type>& v1, float val) {
 
 
 template <class field_type>
-const field<field_type> operator*(const field<field_type>& v1, field<field_type>& v2){
+const field<field_type> operator*(const field<field_type>& v1, const field<field_type>& v2){
     /**
     * Multiplies a vector and scalar field to give a vector field
     */
@@ -163,12 +163,16 @@ const field<field_type> operator*(const field<field_type>& v1, const field<float
     return newField;
 }
 
-template <class field_type>
-const field<field_type> operator*(const field<float>& v1, const field<field_type>& v2){
+
+const field<float> operator*(const field<float>& v1, const field<float>& v2){
     /**
     * Multiplies a scalar and vector field to give a vector field
     */
-    return v2*v1;
+    field<float> newField = field<float>(v1.w);
+    for (int i = 0; i<newField.w->number_of_grid_nodes; i++){
+        newField.grid[i] = v1.grid[i]*v2.grid[i];
+    }
+    return newField;
 }
 
 template <class field_type>

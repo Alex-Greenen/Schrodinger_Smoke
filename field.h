@@ -32,12 +32,16 @@ public:
 
     void updateGridValue(int x, int y, int z, field_type value);
     field_type getGridValue(int x, int y, int z) const;
+
     friend ostream& operator<<(ostream& os, const field<field_type>& field1) {
-        os << "[";
-        for(int i=0; i<field1.grid.size(); ++i)
-            std::cout << field1.grid[i] << ", ";
+        os << "[\n";
+        for(int i=0; i < field1.grid.size(); ++i){
+            std::cout << "     " << field1.w->convert_index_to_gridCoordintates(i) << ": ";
+            std::cout << field1.grid[i] << ", \n";
+        }
+        std::cout << "     Last: ";
         std::cout << field1.grid[-1];
-        os << " ]";
+        os << "\n ]";
         return os;
     }
 };
@@ -53,9 +57,11 @@ void field<field_type>::updateGridValue(int x, int y, int z, field_type value){
      * @param z Z grid point
      * @param value Value to be stored at grid point
      */
+
+    //These three lines center apply fourier boundary to the grid
     x = (x + w->grid_marks[0]) % w->grid_marks[0];
     y = (y + w->grid_marks[1]) % w->grid_marks[1];
-    z = (y + w->grid_marks[2]) % w->grid_marks[2];
+    z = (z + w->grid_marks[2]) % w->grid_marks[2];
 
     grid[z*w->grid_marks[0]*w->grid_marks[1] + y*w->grid_marks[0] + x] = value;
 }
@@ -70,9 +76,11 @@ field_type field<field_type>::getGridValue(int x, int y, int z) const {
      * @param z Z grid point
      * @return Value at grid point
      */
+
+    //These three lines center apply fourier boundary to the grid
     x = (x + w->grid_marks[0]) % w->grid_marks[0];
     y = (y + w->grid_marks[1]) % w->grid_marks[1];
-    z = (y + w->grid_marks[2]) % w->grid_marks[2];
+    z = (z + w->grid_marks[2]) % w->grid_marks[2];
 
     return grid[z*w->grid_marks[0]*w->grid_marks[1] + y*w->grid_marks[0] + x];
 }

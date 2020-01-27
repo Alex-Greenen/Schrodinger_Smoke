@@ -30,10 +30,10 @@ public:
     void time_evolve();
     void pressure_project();
     void normalise();
-    void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
     void apply_velocity_induction(field<vector3D>* velocity_field);
     void set_velocity_induction(field<vector3D>* velocity_field);
-    void apply_vorticity_induction(field<vector3D>* vorticity_field);
+    void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
+    void apply_vorticity_induction(vector3D point, vector3D tangent, float crit_dist, float strength);
     void post_setup();
 };
 
@@ -65,14 +65,14 @@ void isf::post_setup(){
 }
 
 field<vector3D> isf::velocity_field(){
-    return (wf1.momentum_field()+wf2.momentum_field())/(wf1.density_field(), wf2.density_field());
+    return (wf1.momentum_field()+wf2.momentum_field())/(wf1.density_field() + wf2.density_field());
 }
 
 void isf::apply_velocity_induction(field<vector3D>* velocity_field){
     field<float> phase_field = field<float>(w);
-    for (int x = 0; x< w->grid_marks[0]; x += 1){
-        for (int y = 0; y< w->grid_marks[1]; y += 1){
-            for (int z = 0; z< w->grid_marks[2]; z += 1){
+    for (int x = 0; x< w->grid_marks[0]; x++){
+        for (int y = 0; y< w->grid_marks[1]; y++){
+            for (int z = 0; z< w->grid_marks[2]; z++){
                 vector3D velocity = velocity_field->getGridValue(x,y,z);
                 float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
                 phase_field.updateGridValue(x,y,z, phase);
@@ -85,9 +85,9 @@ void isf::apply_velocity_induction(field<vector3D>* velocity_field){
 
 void isf::set_velocity_induction(field<vector3D>* velocity_field){
     field<float> phase_field = field<float>(w);
-    for (int x = 0; x < w->grid_marks[0]; ++x){
-        for (int y = 0; y < w->grid_marks[1]; ++y){
-            for (int z = 0; z < w->grid_marks[2]; ++z){
+    for (int x = 0; x < w->grid_marks[0]; x++){
+        for (int y = 0; y < w->grid_marks[1]; y++){
+            for (int z = 0; z < w->grid_marks[2]; z++){
                 vector3D velocity = velocity_field->getGridValue(x,y,z);
                 float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
                 phase_field.updateGridValue(x,y,z, phase);
@@ -103,23 +103,25 @@ void isf::set_velocity_induction(field<vector3D>* velocity_field){
     wf2.imaginary = sin(&phase_field) * apply_element_wise(&wf2density, sqrt);
 }
 
+
+
 void isf::vortex_ring(vector3D center, vector3D normal, float radius, float strength){
     //This function is not yet written
-//    normal.normalise();
-//    for (int x=0; x<w->grid_marks[0]; x++){
-//        for (int y=0; y<w->grid_marks[1]; y++){
-//            for (int z=0; z<w->grid_marks[2]; z++){
-//                vector3D relative_position = vector3D(x-center[0],y-center[1],z-center[2]);
-//                float a = dot(relative_position, relative_position) - radius*radius;
-//                float b = 2 * dot(relative_position, normal);
-//                wf1.real.updateGridValue(x, y, z, a*wf1.real.getGridValue(x,y,z) -b*wf1.imaginary.getGridValue(x,y,z));
-//                wf1.imaginary.updateGridValue(x, y, z, b*wf1.real.getGridValue(x,y,z) +a*wf1.imaginary.getGridValue(x,y,z));
-//            }
-//        }
-//    }
+    normal.normalise();
+    for (int x=0; x<w->grid_marks[0]; x++){
+        for (int y=0; y<w->grid_marks[1]; y++){
+            for (int z=0; z<w->grid_marks[2]; z++){
+                vector3D relative_position = vector3D(x-center[0],y-center[1],z-center[2]);
+                float a = dot(relative_position, relative_position) - radius*radius;
+                float b = 2 * dot(relative_position, normal);
+                wf1.real.updateGridValue(x, y, z, a*wf1.real.getGridValue(x,y,z) -b*wf1.imaginary.getGridValue(x,y,z));
+                wf1.imaginary.updateGridValue(x, y, z, b*wf1.real.getGridValue(x,y,z) +a*wf1.imaginary.getGridValue(x,y,z));
+            }
+        }
+    }
 }
 
-void isf::apply_vorticity_induction(field<vector3D>* velocity_field){
+void isf::apply_vorticity_induction(vector3D point, vector3D tangent, float crit_dist, float strength){
     //This function is not yet written
 }
 

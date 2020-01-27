@@ -142,7 +142,23 @@ field<float> solve_poisson(field<float> *field1) {
     * @return solution of field
     */
 
-    field<float> solution = *field1;
+    field<float> solution = field<float>(field1->w);
+//    int max_iterations = 40;
+//
+//        for (int x = 0; x < solution.w->grid_marks[0]; x++) {
+//            for (int y = 0; y < solution.w->grid_marks[1]; y++) {
+//                for (int z = 0; z < solution.w->grid_marks[2]; z++) {
+//                    vector3D div = vector3D(
+//                            solution.getGridValue(x + 1, y, z) + solution.getGridValue(x - 1, y, z),
+//                            solution.getGridValue(x, y + 1, z) + solution.getGridValue(x, y - 1, z),
+//                            solution.getGridValue(x, y, z + 1) + solution.getGridValue(x, y, z - 1));
+//                    div = div /(2*solution.w->resolution);
+//
+//                    //
+//                }
+//            }
+//        }
+
 
     int max_iterations = 40;
     float omega = float(2 / (1 + M_PI / solution.w->grid_marks[0]));
@@ -151,14 +167,11 @@ field<float> solve_poisson(field<float> *field1) {
         for (int x = 0; x < solution.w->grid_marks[0]; x++) {
             for (int y = 0; y < solution.w->grid_marks[1]; y++) {
                 for (int z = 0; z < solution.w->grid_marks[2]; z++) {
-                    float sum = solution.getGridValue(x + 1, y, z) + solution.getGridValue(x - 1, y, z) +
-                                solution.getGridValue(x, y + 1, z) + solution.getGridValue(x, y - 1, z) +
-                                solution.getGridValue(x, y, z + 1) + solution.getGridValue(x, y, z - 1);
-                    float value = (1 - omega) * solution.getGridValue(x, y, z) + omega * (sum -
-                                                                                          (solution.w->resolution *
-                                                                                           solution.w->resolution) *
-                                                                                          field1->getGridValue(x, y,
-                                                                                                               z)) / 6;
+                    float sum = field1->getGridValue(x + 1, y, z) + field1->getGridValue(x - 1, y, z) +
+                                field1->getGridValue(x, y + 1, z) + field1->getGridValue(x, y - 1, z) +
+                                field1->getGridValue(x, y, z + 1) + field1->getGridValue(x, y, z - 1);
+                    float value = (1 - omega) * field1->getGridValue(x, y, z)
+                                    + omega * (sum + solution.w->resolution * solution.w->resolution * field1->getGridValue(x, y, z)) / 2;
                     solution.updateGridValue(x, y, z, value);
                 }
             }
@@ -232,5 +245,13 @@ float randnp1() {
 }
 
 
+float square(float x) {
+    /**
+    * Generates a random number between -1 and 1
+    *
+    * @return random number between -1 and 1
+    */
+    return x*x;
+}
 
 #endif //SCHRODINGER_SMOKE_MATH_UTIL_H

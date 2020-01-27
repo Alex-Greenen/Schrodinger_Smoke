@@ -43,9 +43,8 @@ void wavefunction::time_evolve(){
     * Evolves the wavefunction using the half-step formula.
    */
     // At t += dt/2, evolve R
-    field<float> realtemp = real + dt * ((-hbar/2)*laplacian(&imaginary) + (1/hbar)* potential * imaginary);
+    real = real + dt * ((-hbar/2)*laplacian(&imaginary) + (1/hbar)* potential * imaginary);
     imaginary = imaginary + dt * ((hbar/2)*laplacian(&real) - (1/hbar) * potential * real);
-    real = realtemp;
 
 }
 
@@ -58,7 +57,7 @@ void wavefunction::apply_phase(field<float> *phase_angle){
 }
 
 field<vector3D> wavefunction::momentum_field(){
-    field<vector3D> temp = hbar *(gradient(&imaginary) * real + imaginary * gradient(&real));
+    field<vector3D> temp = hbar *(gradient(&imaginary) * real + gradient(&real)*imaginary);
     return temp;
 }
 

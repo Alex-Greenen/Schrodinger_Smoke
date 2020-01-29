@@ -27,8 +27,8 @@ public:
     int number_of_grid_nodes;
     float resolution;
 
-    inline vector3D convert_to_worldCoordintates(vector3D gridPoint){
-        return gridPoint*resolution;
+    inline vector3D convert_to_worldCoordintates(float x, float y, float z){
+        return vector3D(x,y,z)*resolution;
     }
 
     inline vector3D convert_to_gridCoordintates(vector3D worldPoint){

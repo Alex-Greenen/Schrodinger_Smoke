@@ -143,23 +143,6 @@ field<float> solve_poisson(field<float> *field1) {
     */
 
     field<float> solution = field<float>(field1->w);
-//    int max_iterations = 40;
-//
-//        for (int x = 0; x < solution.w->grid_marks[0]; x++) {
-//            for (int y = 0; y < solution.w->grid_marks[1]; y++) {
-//                for (int z = 0; z < solution.w->grid_marks[2]; z++) {
-//                    vector3D div = vector3D(
-//                            solution.getGridValue(x + 1, y, z) + solution.getGridValue(x - 1, y, z),
-//                            solution.getGridValue(x, y + 1, z) + solution.getGridValue(x, y - 1, z),
-//                            solution.getGridValue(x, y, z + 1) + solution.getGridValue(x, y, z - 1));
-//                    div = div /(2*solution.w->resolution);
-//
-//                    //
-//                }
-//            }
-//        }
-
-
     int max_iterations = 40;
     float omega = float(2 / (1 + M_PI / solution.w->grid_marks[0]));
 
@@ -193,7 +176,7 @@ inline vector3D interpolate(vector3D min_x, vector3D max_x, float x) {
     * @return the interpolated vector
     */
 
-    return (1 - x) * min_x + x * (max_x - min_x);
+    return min_x + x * (max_x - min_x);
 }
 
 vector3D

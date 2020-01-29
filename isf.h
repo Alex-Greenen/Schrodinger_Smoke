@@ -15,8 +15,8 @@ class isf {
 public:
     isf() = default;
     isf(world* _w , float _dt, float _hbar): w(_w), dt(_dt), hbar(_hbar) {
-        wf1 = wavefunction(w, dt, hbar, 0.9);
-        wf2 = wavefunction(w, dt, hbar, 0.1);
+        wf1 = wavefunction(w, dt, hbar, 0.9486832);
+        wf2 = wavefunction(w, dt, hbar, 0.3162277);
     }
 
 
@@ -34,13 +34,12 @@ public:
     void set_velocity_induction(field<vector3D>* velocity_field);
     void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
     void apply_vorticity_induction(vector3D point, vector3D tangent, float crit_dist, float strength);
-    void post_setup();
 };
 
 void isf::pressure_project(){
     field<vector3D> v = velocity_field();
     field<float> d = divergence(&v);
-    field<float> phase = solve_poisson(&d)/hbar ;
+    field<float> phase = -1 * solve_poisson(&d)/hbar ;
     wf1.apply_phase(&phase);
     wf2.apply_phase(&phase);
 }
@@ -59,10 +58,6 @@ void isf::normalise() {
     wf2.imaginary = wf2.imaginary/density;
 }
 
-void isf::post_setup(){
-    pressure_project();
-    normalise();
-}
 
 field<vector3D> isf::velocity_field(){
     return (wf1.momentum_field()+wf2.momentum_field())/(wf1.density_field() + wf2.density_field());
@@ -74,7 +69,8 @@ void isf::apply_velocity_induction(field<vector3D>* velocity_field){
         for (int y = 0; y< w->grid_marks[1]; y++){
             for (int z = 0; z< w->grid_marks[2]; z++){
                 vector3D velocity = velocity_field->getGridValue(x,y,z);
-                float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
+                vector3D position = w->convert_to_worldCoordintates(x,y,z);
+                float phase = velocity*position/hbar ;
                 phase_field.updateGridValue(x,y,z, phase);
             }
         }
@@ -89,7 +85,8 @@ void isf::set_velocity_induction(field<vector3D>* velocity_field){
         for (int y = 0; y < w->grid_marks[1]; y++){
             for (int z = 0; z < w->grid_marks[2]; z++){
                 vector3D velocity = velocity_field->getGridValue(x,y,z);
-                float phase = (velocity[0]*x + velocity[1]*y + velocity[2]*z)/hbar ;
+                vector3D position = w->convert_to_worldCoordintates(x,y,z);
+                float phase = velocity*position/hbar;
                 phase_field.updateGridValue(x,y,z, phase);
             }
         }

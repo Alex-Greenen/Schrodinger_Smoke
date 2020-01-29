@@ -16,10 +16,10 @@ class wavefunction {
 public:
     wavefunction()= default;
 
-    wavefunction(world* _w, double _hbar, double _dt, float real_value = 0.09): w(_w), hbar(_hbar), dt(_dt){
+    wavefunction(world* _w, double _hbar, double _dt, float real_value = 1.0): w(_w), hbar(_hbar), dt(_dt){
         real = field<float>(w, real_value);
-        imaginary = field<float>(w, 0.01);
-        potential = field<float>(w, 0);
+        imaginary = field<float>(w, 0.0);
+        potential = field<float>(w, 0.0);
     }
 
     world* w;
@@ -57,7 +57,7 @@ void wavefunction::apply_phase(field<float> *phase_angle){
 }
 
 field<vector3D> wavefunction::momentum_field(){
-    field<vector3D> temp = hbar *(gradient(&imaginary) * real + gradient(&real)*imaginary);
+    field<vector3D> temp = hbar *(gradient(&imaginary) * real - gradient(&real)*imaginary);
     return temp;
 }
 

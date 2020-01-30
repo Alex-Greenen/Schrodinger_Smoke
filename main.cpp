@@ -12,10 +12,10 @@
 float x_size = 2;
 float y_size = 2;
 float z_size = 2;
-float res = 0.06;
+float res = 0.05;
 float hbar = 0.05;
 float dt = 0.04;
-int frames = 70;
+int frames = 30;
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int main() {
         for (int y = 0; y< w->grid_marks[1]; y++){
             float rsq = sqrt(square((float) x - ((float) w->grid_marks[0])/2) + square((float) y - (float) w->grid_marks[1]/2));
             if (rsq < ((float)w->grid_marks[0])/3){
-                for (int z = 0; z < ((float) w->grid_marks[2])/2; z++) {
+                for (int z = 1; z < 4; z++) {
                     velocityField.updateGridValue(x, y, z, vector3D(0, 0, 0.3));
                 }
             }

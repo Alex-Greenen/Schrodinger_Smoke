@@ -144,7 +144,7 @@ field<float> solve_poisson(field<float> *field1) {
 
     field<float> solution = field<float>(field1->w, 0);
     int max_iterations = 40;
-    float omega = float(2 / (1 + M_PI / solution.w->grid_marks[0]));
+    float omega = 0.5; //Random papers online said this was a good coeff
 
     for (int i = 0; i < max_iterations; i++) {
         for (int x = 0; x < solution.w->grid_marks[0]; x++) {
@@ -181,8 +181,7 @@ inline vector3D interpolate(vector3D min_x, vector3D max_x, float x) {
     return min_x + x * (max_x - min_x);
 }
 
-vector3D
-interpolate_in_cube(vector3D bfl, vector3D bfr, vector3D bbl, vector3D bbr, vector3D tfl, vector3D tfr, vector3D tbl,
+vector3D interpolate_in_cube(vector3D bfl, vector3D bfr, vector3D bbl, vector3D bbr, vector3D tfl, vector3D tfr, vector3D tbl,
                     vector3D tbr, float x, float y, float z) {
     /**
     * Interpolates in cube of vectors.
@@ -237,6 +236,49 @@ float square(float x) {
     * @return random number between -1 and 1
     */
     return x*x;
+}
+
+float intgr_abs_div(field<vector3D> *field1) {
+    /**
+    * integrates over the abs of the divergence of a vector field.
+    *
+    * @param field1 pointer to field you wish to use
+    * @return intgral of the absolute divergence of field
+    */
+
+    float div = 0;
+
+    for (int x = 0; x < field1->w->grid_marks[0]; x++) {
+        for (int y = 0; y < field1->w->grid_marks[1]; y++) {
+            for (int z = 0; z < field1->w->grid_marks[2]; z++) {
+                float xdiv = field1->getGridValue(x + 1, y, z)[0] - field1->getGridValue(x - 1, y, z)[0];
+                float ydiv = field1->getGridValue(1, y + 1, z)[1] - field1->getGridValue(x, y - 1, z)[1];
+                float zdiv = field1->getGridValue(x, y, z + 1)[2] - field1->getGridValue(x, y, z - 1)[2];
+                div += abs(field1->w->resolution*field1->w->resolution*(xdiv + ydiv + zdiv) / 2);
+            }
+        }
+    }
+    return div;
+}
+
+float intgr_norm_min1(field<float> *field1) {
+    /**
+    * integrates over the deviance of the norm of a scalar field to 1.
+    *
+    * @param field1 pointer to field you wish to use
+    * @return intgral of the absolute divergence of field
+    */
+
+    float norm = 0;
+
+    for (int x = 0; x < field1->w->grid_marks[0]; x++) {
+        for (int y = 0; y < field1->w->grid_marks[1]; y++) {
+            for (int z = 0; z < field1->w->grid_marks[2]; z++) {
+                norm += abs(field1->w->resolution*field1->w->resolution*field1->w->resolution*(field1->getGridValue(x + 1, y, z)-1));
+            }
+        }
+    }
+    return norm;
 }
 
 #endif //SCHRODINGER_SMOKE_MATH_UTIL_H

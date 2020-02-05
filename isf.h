@@ -27,13 +27,13 @@ public:
     world* w;
 
     field<vector3D> velocity_field();
+    field<float> density_field();
     void time_evolve();
     void pressure_project();
     void normalise();
     void apply_velocity_induction(field<vector3D>* velocity_field);
     void set_velocity_induction(field<vector3D>* velocity_field);
-    void vortex_ring(vector3D center, vector3D normal, float radius, float strength);
-    void apply_vorticity_induction(vector3D point, vector3D tangent, float crit_dist, float strength);
+    void vortex_ring(vector3D center, vector3D normal, float radius, float width);
 };
 
 void isf::pressure_project(){
@@ -56,6 +56,11 @@ void isf::normalise() {
     wf1.imaginary = wf1.imaginary/density;
     wf2.real = wf2.real/density;
     wf2.imaginary = wf2.imaginary/density;
+}
+
+field<float> isf::density_field() {
+    field<float> density = wf1.density_field()+ wf2.density_field();
+    return density;
 }
 
 
@@ -102,24 +107,25 @@ void isf::set_velocity_induction(field<vector3D>* velocity_field){
 
 
 
-void isf::vortex_ring(vector3D center, vector3D normal, float radius, float strength){
-    //This function is not yet written
+void isf::vortex_ring(vector3D center, vector3D normal, float radius, float width){
+    field<vector3D> velocity_field = field<vector3D>(w);
     normal.normalise();
-    for (int x=0; x<w->grid_marks[0]; x++){
-        for (int y=0; y<w->grid_marks[1]; y++){
-            for (int z=0; z<w->grid_marks[2]; z++){
-                vector3D relative_position = vector3D(x-center[0],y-center[1],z-center[2]);
-                float a = dot(relative_position, relative_position) - radius*radius;
-                float b = 2 * dot(relative_position, normal);
-                wf1.real.updateGridValue(x, y, z, a*wf1.real.getGridValue(x,y,z) -b*wf1.imaginary.getGridValue(x,y,z));
-                wf1.imaginary.updateGridValue(x, y, z, b*wf1.real.getGridValue(x,y,z) +a*wf1.imaginary.getGridValue(x,y,z));
+    for (int x = 0; x<w->grid_marks[0]; x++) {
+        for (int y = 0 ; y<w->grid_marks[1]; y++) {
+            for (int z = 0; z<w->grid_marks[2] ; z++) {
+                vector3D rp = w->convert_to_worldCoordintates(x,y,z) - center;
+                float zc = rp*normal;
+                float dd = sqrt(rp*rp - zc*zc);
+                float l = dd-radius;
+                float d = sqrt(l*l + zc*zc);
+                if (d< width){
+                    vector3D v = (zc * (rp-zc*normal) / (rp-zc*normal).norm() - l * normal) /(l*l + zc*zc);
+                    velocity_field.updateGridValue(x,y,z, v);
+                }
             }
         }
     }
-}
-
-void isf::apply_vorticity_induction(vector3D point, vector3D tangent, float crit_dist, float strength){
-    //This function is not yet written
+    apply_velocity_induction(&velocity_field);
 }
 
 #endif //SCHRODINGER_SMOKE_ISF_H

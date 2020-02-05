@@ -94,6 +94,15 @@ void output_particle::evolve_particles(field<vector3D>* velocity_field){
                                                 velocity_field->getGridValue(xbase+1,ybase+1,zbase+1),
                                                 xbetween, ybetween, zbetween);
         vector3D moved_particle = particle_locations_perframe[currentFrame][particle]+dt*velocity;
+
+        // Periodic Boundary Conditions
+        if (moved_particle[0] < 0) {moved_particle.e[0] += w->grid_size[0];}
+        if (moved_particle[0] > w->grid_size[0]){moved_particle.e[0]-= w->grid_size[0];}
+        if (moved_particle[1] < 0){moved_particle.e[1]+= w->grid_size[1];}
+        if (moved_particle[1] > w->grid_size[1]){moved_particle.e[1]-= w->grid_size[1];}
+        if (moved_particle[2] < 0){moved_particle.e[2]+= w->grid_size[2];}
+        if (moved_particle[2] > w->grid_size[2]){moved_particle.e[2]-= w->grid_size[2];}
+
         particle_locations_perframe[currentFrame+1].push_back(moved_particle);
     }
     currentFrame++;

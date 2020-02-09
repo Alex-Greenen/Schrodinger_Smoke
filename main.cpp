@@ -13,9 +13,9 @@
 float x_size = 2;
 float y_size = 2;
 float z_size = 2;
-float res = 0.05;
+float res = 0.03;
 float hbar = 0.05;
-float dt = 0.05;
+float dt = 0.016;
 int frames = 60;
 
 using namespace std;
@@ -29,7 +29,7 @@ int main() {
     //Create the initial flow
     set_jet_velocity2(schr_flow);
 
-    //schr_flow.pressure_project();
+    schr_flow.pressure_project();
     schr_flow.normalise();
 
     output_particle buffer = output_particle(w, dt, frames);
@@ -41,10 +41,10 @@ int main() {
         // Iterate Fluid
         schr_flow.time_evolve();
         schr_flow.normalise();
-        //schr_flow.pressure_project();
+        schr_flow.pressure_project();
 
         // Maintian Jet
-        set_jet_velocity2(schr_flow);
+        //set_jet_velocity2(schr_flow);
 
         // Advect Particles
         field<vector3D> flow = schr_flow.velocity_field();
@@ -52,7 +52,6 @@ int main() {
 
         // add particles
         add_jet_particles2(buffer);
-
 
         std::cout << "Simulated frame " << (frame + 1) << ".\n";
         std::cout << "Div: " << intgr_abs_div(&flow) << ".\n";

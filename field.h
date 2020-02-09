@@ -87,9 +87,6 @@ field_type field<field_type>::getGridValue(int x, int y, int z) const {
 
 
 
-
-// THE FOLLOWING OPERATORS ARE NOT WORKING
-
 template <class field_type>
 const field<field_type> operator+(const field<field_type>& v1, const field<field_type>& v2){
     /**

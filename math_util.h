@@ -144,20 +144,19 @@ field<float> solve_poisson(field<float> *field1) {
 
     field<float> solution = field<float>(field1->w, 0);
     int max_iterations = 40;
-    float omega = 0.5; //Random papers online said this was a good coeff
+    float omega = 0.5;
 
     for (int i = 0; i < max_iterations; i++) {
         for (int x = 0; x < solution.w->grid_marks[0]; x++) {
             for (int y = 0; y < solution.w->grid_marks[1]; y++) {
                 for (int z = 0; z < solution.w->grid_marks[2]; z++) {
 
-                        float sum = solution.getGridValue(x + 1, y, z) + solution.getGridValue(x - 1, y, z) +
-                                    solution.getGridValue(x, y + 1, z) + solution.getGridValue(x, y - 1, z) +
-                                    solution.getGridValue(x, y, z + 1) + solution.getGridValue(x, y, z - 1);
-                        float value = (1 - omega) * solution.getGridValue(x, y, z)
-                                      + omega * (sum + solution.w->resolution * solution.w->resolution * field1->getGridValue(x, y, z)) / 2;
-                        solution.updateGridValue(x, y, z, value);
-
+                    float sum = solution.getGridValue(x + 1, y, z) + solution.getGridValue(x - 1, y, z) +
+                            solution.getGridValue(x, y + 1, z) + solution.getGridValue(x, y - 1, z) +
+                            solution.getGridValue(x, y, z + 1) + solution.getGridValue(x, y, z - 1);
+                    float value = (1 - omega) * solution.getGridValue(x, y, z)
+                            + omega * (sum + solution.w->resolution * solution.w->resolution * field1->getGridValue(x, y, z)) / 2;
+                    solution.updateGridValue(x, y, z, value);
                 }
             }
         }

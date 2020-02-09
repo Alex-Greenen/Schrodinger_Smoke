@@ -37,9 +37,9 @@ public:
 };
 
 void isf::pressure_project(){
-    field<vector3D> v = velocity_field();
+    field<vector3D> v = this->velocity_field();
     field<float> d = divergence(&v);
-    field<float> phase = solve_poisson(&d); // -1 * solve_poisson(&d)/hbar ;
+    field<float> phase = (-1/hbar) * solve_poisson(&d) ;
     wf1.apply_phase(&phase);
     wf2.apply_phase(&phase);
 }

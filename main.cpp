@@ -21,7 +21,7 @@ int frames = 60;
 using namespace std;
 
 int main() {
-    //Test
+
     std::cout << "Setting up. \n";
     auto *w = new world(x_size, y_size, z_size, res);
     isf schr_flow = isf(w, dt, hbar);

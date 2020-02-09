@@ -44,7 +44,7 @@ int main() {
         schr_flow.pressure_project();
 
         // Maintian Jet
-        //set_jet_velocity2(schr_flow);
+        set_jet_velocity2(schr_flow);
 
         // Advect Particles
         field<vector3D> flow = schr_flow.velocity_field();
